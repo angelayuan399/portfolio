@@ -5,6 +5,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Angela Yuan: Personal site and portfolio</title>
     <link rel="stylesheet" href="style.css">
+<style>
+
+    html {
+      --color-accent: oklch(87.156% 0.07488 352.855); 
+      accent-color: var(--color-accent);
+    }
+
+    body {
+      max-width: 100ch;
+      margin-inline: auto;
+      padding-inline: 1em;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      line-height: 1.5;
+    }
+
+
+    nav ul,
+    nav li {
+      display: contents; 
+    }
+
+    nav {
+      display: flex;                 
+      margin-bottom: 1.5rem;         
+      border-bottom: 1px solid oklch(75.578% 0.07573 5.131); 
+    }
+
+  
+    nav a {
+      flex: 1;                      
+      display: block;                
+      text-decoration: none;         
+      color: inherit;              
+      text-align: center;           
+      padding: 0.5em;           
+      border-bottom: 0.4em solid transparent; 
+      transition: background-color 120ms ease, border-color 120ms ease;
+    }
+
+    
+    nav a.current {
+      border-bottom-color: oklch(80% 3% 200);   
+      padding-bottom: calc(0.5em - 0.4em);    
+    }
+
+    nav a:hover {
+      border-bottom-color: var(--color-accent);
+      background-color: oklch(from var(--color-accent) 95% 5% h); 
+    }
+</style>
+
 </head>
 <body>
     <nav>
