@@ -9,7 +9,6 @@
   <style>
     :root { --accent: oklch(65% 50% 0); }
 
-  
     body {
       max-width: 70ch;
       margin-inline: auto;
@@ -18,54 +17,52 @@
       line-height: 1.5;
     }
 
-
     input, textarea, button { font: inherit; }
-
 
     form {
       display: grid;
-      grid-template-columns: auto 1fr;    
-      gap: 1em;                           
-      align-items: center;               
+      grid-template-columns: auto 1fr; 
+      gap: 1em;
+      align-items: center;
       margin-block: 1.5rem 2rem;
     }
 
     label {
       display: grid;
-      grid-template-columns: subgrid;     
-      grid-column: 1 / -1;                
-
+      grid-template-columns: subgrid;  
+      grid-column: 1 / -1;              
+      align-items: center;
       font-weight: 600;
     }
 
     label > .label-text {
-      grid-column: 1;                      
+      grid-column: 1;
       align-self: center;
     }
 
-
-    label > .control {
-      grid-column: 2;                      
+    .control {
+      grid-column: 2;
       width: 100%;
       box-sizing: border-box;
       padding: 0.6em 0.75em;
       border: 1px solid oklch(80% 3% 200);
       border-radius: 0.375rem;
       background: #fff;
-      font-weight: 400;                   
+      font-weight: 400;
     }
 
     textarea.control { min-height: 8rem; resize: vertical; }
 
-
-    .control:focus, button:focus {
+    .control:focus,
+    button:focus {
       outline: none;
       border-color: var(--accent);
       box-shadow: 0 0 0 3px oklch(from var(--accent) 92% 0.08 h);
     }
 
+
     button[type="submit"] {
-      grid-column: 1 / -1;                
+      grid-column: 1 / -1;
       justify-self: start;
       padding: 0.6em 1em;
       border: 1px solid var(--accent);
@@ -74,31 +71,34 @@
       border-radius: 0.375rem;
       cursor: pointer;
     }
-    button[type="submit"]:hover { filter: brightness(0.95); 
-      grid-column: 1/-1;}
+    button[type="submit"]:hover { filter: brightness(0.95); }
+
+
+    @media (max-width: 600px) {
+      form { grid-template-columns: 1fr; }
+      label { grid-template-columns: 1fr; }
+      .control { grid-column: 1; }
+    }
   </style>
 </head>
 <body>
-<form 
-action="https://formspree.io/f/mvgwrjel" 
-method="POST">
-  <label>
-    Email:
-    <input type="email" name="email"value='anyuan@ucsd.edu' required>
-  </label>
-  <br>
-  <label>
-    Subject:
-    <input name="subject" value="test subject">
-  </label>
-  <br>
-  <label>
-    Body:
-    <textarea name="body" rows="5">This is a test message </textarea>
-  </label>
-  <br>
-  <button type="submit">Send</button>
-</form>
+  <form action="https://formspree.io/f/mvgwrjel" method="POST">
+    <label for="email">
+      <span class="label-text">Email:</span>
+      <input class="control" id="email" type="email" name="email" value="anyuan@ucsd.edu" required>
+    </label>
 
+    <label for="subject">
+      <span class="label-text">Subject:</span>
+      <input class="control" id="subject" name="subject" value="test subject">
+    </label>
+
+    <label for="body">
+      <span class="label-text">Body:</span>
+      <textarea class="control" id="body" name="body" rows="5">This is a test message</textarea>
+    </label>
+
+    <button type="submit">Send</button>
+  </form>
 </body>
 </html>
