@@ -9,7 +9,7 @@
   <style>
     :root { --accent: oklch(65% 50% 0); }
 
-    /* Comfortable reading width */
+  
     body {
       max-width: 70ch;
       margin-inline: auto;
@@ -18,58 +18,54 @@
       line-height: 1.5;
     }
 
-    /* Inherit page typography into form controls */
+
     input, textarea, button { font: inherit; }
 
-    /* Step 3.3: Grid layout */
+
     form {
       display: grid;
-      grid-template-columns: auto 1fr;     /* label column auto, control column fills */
-      gap: 1em;                            /* space between rows/cols */
-      align-items: center;                 /* vertical align within each row */
+      grid-template-columns: auto 1fr;    
+      gap: 1em;                           
+      align-items: center;               
       margin-block: 1.5rem 2rem;
     }
 
-    /* Each label spans the whole grid row and uses the parent grid's columns via subgrid */
     label {
       display: grid;
-      grid-template-columns: subgrid;      /* adopt columns from the form grid */
-      grid-column: 1 / -1;                 /* each field is one full row of the form grid */
-      /* Fallback if subgrid isn't available in some older browser:
-         display: contents;  /* uncomment as a fallback */
+      grid-template-columns: subgrid;     
+      grid-column: 1 / -1;                
+
       font-weight: 600;
     }
 
-    /* The label text sits in the first column */
     label > .label-text {
-      grid-column: 1;                      /* first (auto) column */
+      grid-column: 1;                      
       align-self: center;
     }
 
-    /* The control sits in the second column */
+
     label > .control {
-      grid-column: 2;                      /* second (1fr) column */
+      grid-column: 2;                      
       width: 100%;
       box-sizing: border-box;
       padding: 0.6em 0.75em;
       border: 1px solid oklch(80% 3% 200);
       border-radius: 0.375rem;
       background: #fff;
-      font-weight: 400;                    /* keep input text normal weight */
+      font-weight: 400;                   
     }
 
     textarea.control { min-height: 8rem; resize: vertical; }
 
-    /* Accessible focus */
+
     .control:focus, button:focus {
       outline: none;
       border-color: var(--accent);
       box-shadow: 0 0 0 3px oklch(from var(--accent) 92% 0.08 h);
     }
 
-    /* Submit button spans full width row; align to start so it doesn’t stretch */
     button[type="submit"] {
-      grid-column: 1 / -1;                 /* its own row across both columns */
+      grid-column: 1 / -1;                
       justify-self: start;
       padding: 0.6em 1em;
       border: 1px solid var(--accent);
