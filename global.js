@@ -1,4 +1,56 @@
-console.log("IT'S ALIVE!");
+// --- sanity: prove the file loaded on this page ---
+console.log("IT'S ALIVE!", location.pathname);
+
+// --- ensure the theme control exists, even if other code errors later ---
+(function ensureThemeControl() {
+  // Avoid duplicates if re-run
+  if (document.querySelector("#theme-select")) return;
+
+  const prefersDark = matchMedia("(prefers-color-scheme: dark)").matches;
+  const autoLabel = `Automatic (${prefersDark ? "Dark" : "Light"})`;
+
+  document.body.insertAdjacentHTML(
+    "afterbegin",
+    `
+    <label class="color-scheme">
+      Theme:
+      <select id="theme-select" aria-label="Color scheme">
+        <option value="light dark">${autoLabel}</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+      </select>
+    </label>
+    `
+  );
+
+  const select = document.querySelector("#theme-select");
+
+  function applyScheme(value) {
+    document.documentElement.style.setProperty("color-scheme", value);
+    if (select.value !== value) select.value = value;
+  }
+
+  // Load saved preference or default to Automatic
+  const saved = localStorage.colorScheme;
+  applyScheme(saved ? saved : "light dark");
+  if (saved) select.value = saved;
+
+  // Persist changes
+  select.addEventListener("input", (e) => {
+    const value = e.target.value;        // "light dark" | "light" | "dark"
+    localStorage.colorScheme = value;
+    applyScheme(value);
+    console.log("color scheme changed to", value);
+  });
+
+  // Keep Automatic label up-to-date if OS theme flips
+  matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change", (e) => {
+    const autoOption = select.querySelector('option[value="light dark"]');
+    if (autoOption) autoOption.textContent = `Automatic (${e.matches ? "Dark" : "Light"})`;
+    if (select.value === "light dark") applyScheme("light dark");
+  });
+})();
+
 
 // Helper: querySelectorAll -> Array
 function $$(selector, context = document) {
