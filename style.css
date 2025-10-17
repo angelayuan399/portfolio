@@ -44,9 +44,17 @@ nav a.current {
 }
 
 /* Fix the hover color to be theme-aware using color-mix + canvas */
+/* keep border as-is via --border-color var */
+nav a { background: transparent; }
+
+/* current tab should not have a filled background */
+nav a.current { background: transparent; }
+
+/* make hover very subtle in dark mode */
 nav a:hover {
   border-bottom-color: var(--color-accent);
-  background-color: color-mix(in oklch, var(--color-accent), canvas 85%);
+  /* was canvas 85%; lighten it so it doesn't look like a big pink pill */
+  background-color: color-mix(in oklch, var(--color-accent), canvas 92%);
 }
 
 /* Quick styling for the theme control */
