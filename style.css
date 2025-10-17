@@ -1,6 +1,63 @@
+/* Enable automatic dark mode at the root */
+html {
+  color-scheme: light dark;            /* supports light & dark */
+  background: canvas;                  /* system background color */
+  color: canvastext;                   /* system text color */
+  --color-accent: oklch(87.156% 0.07488 352.855);
+  accent-color: var(--color-accent);
+}
+
+/* Your existing body styles can stay as-is */
 body {
-  /* Set line height to 1.5 times the font size
-	   and use the OS’s UI font as the website font
-	 */
-  font: 100%/1.5 system-ui;
+  max-width: 100ch;
+  margin-inline: auto;
+  padding-inline: 1em;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  line-height: 1.5;
+}
+
+/* Nav styles; replace hard-coded borders with a var that works in both themes */
+nav {
+  display: flex;
+  margin-bottom: 1.5rem;
+  --border-color: oklch(50% 10% 200 / 40%);   /* adaptive via transparency */
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* (Optional) You had these, they still apply */
+nav ul, nav li { display: contents; }
+
+nav a {
+  flex: 1;
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  text-align: center;
+  padding: 0.5em;
+  border-bottom: 0.4em solid transparent;
+  transition: background-color 120ms ease, border-color 120ms ease;
+}
+
+nav a.current {
+  border-bottom-color: oklch(80% 3% 200);
+  padding-bottom: calc(0.5em - 0.4em);
+}
+
+/* Fix the hover color to be theme-aware using color-mix + canvas */
+nav a:hover {
+  border-bottom-color: var(--color-accent);
+  background-color: color-mix(in oklch, var(--color-accent), canvas 85%);
+}
+
+/* Quick styling for the theme control */
+label.color-scheme {
+  display: inline-flex;
+  gap: 0.5rem;
+  align-items: center;
+  font: inherit;
+  margin-block: 0.5rem;
+}
+label.color-scheme select {
+  font: inherit;
+  padding: 0.2rem 0.4rem;
 }
