@@ -1,3 +1,73 @@
+// --- SINGLE THEME SWITCH (idempotent) ---
+(function mountThemeSwitch() {
+  // If we've already mounted in this page context, bail
+  if (window.__themeSwitchMounted) return;
+  window.__themeSwitchMounted = true;
+
+  // If duplicates already exist in the DOM, keep the first and remove the rest
+  const allExisting = Array.from(document.querySelectorAll('[data-theme-switch], label.color-scheme'));
+  if (allExisting.length > 1) {
+    allExisting.slice(1).forEach(el => el.remove());
+  }
+
+  // Reuse existing switch if present, else create one
+  let wrap = document.querySelector('[data-theme-switch], label.color-scheme');
+  if (!wrap) {
+    const prefersDark = matchMedia('(prefers-color-scheme: dark)').matches;
+    const autoLabel = `Automatic (${prefersDark ? 'Dark' : 'Light'})`;
+    wrap = document.createElement('label');
+    wrap.className = 'color-scheme';
+    wrap.setAttribute('data-theme-switch', '');
+    wrap.innerHTML = `
+      Theme:
+      <select id="theme-select" aria-label="Color scheme">
+        <option value="light dark">${autoLabel}</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+      </select>
+    `;
+    document.body.insertAdjacentElement('afterbegin', wrap);
+  } else {
+    // make sure our data attr is present for future checks
+    wrap.setAttribute('data-theme-switch', '');
+  }
+
+  const select = wrap.querySelector('#theme-select');
+
+  function applyScheme(value) {
+    document.documentElement.style.setProperty('color-scheme', value);
+    if (select.value !== value) select.value = value;
+  }
+
+  const saved = localStorage.colorScheme;
+  applyScheme(saved || 'light dark');
+  if (saved) select.value = saved;
+
+  select.addEventListener('input', (e) => {
+    const value = e.target.value;
+    localStorage.colorScheme = value;
+    applyScheme(value);
+  });
+
+  const mq = matchMedia('(prefers-color-scheme: dark)');
+  mq.addEventListener?.('change', (e) => {
+    const opt = select.querySelector('option[value="light dark"]');
+    if (opt) opt.textContent = `Automatic (${e.matches ? 'Dark' : 'Light'})`;
+    if (select.value === 'light dark') applyScheme('light dark');
+  });
+
+  // When nav exists, keep the switch above it (nice placement)
+  const observer = new MutationObserver(() => {
+    const nav = document.querySelector('nav');
+    if (nav && wrap.nextElementSibling !== nav) {
+      nav.insertAdjacentElement('beforebegin', wrap);
+      observer.disconnect();
+    }
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
+})();
+
+
 console.log("IT'S ALIVE!", location.pathname);
 
 (function ensureThemeControl() {
