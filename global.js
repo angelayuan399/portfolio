@@ -97,48 +97,48 @@ currentLink?.classList.add("current");
 // const prefersDark = prefersDarkMQ.matches;
 // let autoLabel = `Automatic (${prefersDark ? "Dark" : "Light"})`;
 
-document.body.insertAdjacentHTML(
-  "afterbegin",
-  `
-  <label class="color-scheme">
-    Theme:
-    <select id="theme-select" aria-label="Color scheme">
-      <option value="light dark">${autoLabel}</option>
-      <option value="light">Light</option>
-      <option value="dark">Dark</option>
-    </select>
-  </label>
-`
-);
+// document.body.insertAdjacentHTML(
+//   "afterbegin",
+//   `
+//   <label class="color-scheme">
+//     Theme:
+//     <select id="theme-select" aria-label="Color scheme">
+//       <option value="light dark">${autoLabel}</option>
+//       <option value="light">Light</option>
+//       <option value="dark">Dark</option>
+//     </select>
+//   </label>
+// `
+// );
 
-const select = document.querySelector("#theme-select");
+// const select = document.querySelector("#theme-select");
 
-function applyScheme(schemeValue) {
-  document.documentElement.style.setProperty("color-scheme", schemeValue);
-  if (select && select.value !== schemeValue) {
-    select.value = schemeValue;
-  }
-}
+// function applyScheme(schemeValue) {
+//   document.documentElement.style.setProperty("color-scheme", schemeValue);
+//   if (select && select.value !== schemeValue) {
+//     select.value = schemeValue;
+//   }
+// }
 
-const saved = localStorage.colorScheme;
-applyScheme(saved ? saved : "light dark");
-if (saved) {
-  select.value = saved;
-}
+// const saved = localStorage.colorScheme;
+// applyScheme(saved ? saved : "light dark");
+// if (saved) {
+//   select.value = saved;
+// }
 
-select.addEventListener("input", (event) => {
-  const value = event.target.value;            
-  localStorage.colorScheme = value;            
-  applyScheme(value);                        
-  console.log("color scheme changed to", value);
-});
+// select.addEventListener("input", (event) => {
+//   const value = event.target.value;            
+//   localStorage.colorScheme = value;            
+//   applyScheme(value);                        
+//   console.log("color scheme changed to", value);
+// });
 
-prefersDarkMQ.addEventListener?.("change", (e) => {
-  const newLabel = `Automatic (${e.matches ? "Dark" : "Light"})`;
-  const autoOption = select.querySelector('option[value="light dark"]');
-  if (autoOption) autoOption.textContent = newLabel;
+// prefersDarkMQ.addEventListener?.("change", (e) => {
+//   const newLabel = `Automatic (${e.matches ? "Dark" : "Light"})`;
+//   const autoOption = select.querySelector('option[value="light dark"]');
+//   if (autoOption) autoOption.textContent = newLabel;
 
-  if (select.value === "light dark") {
-    applyScheme("light dark");
-  }
-});
+//   if (select.value === "light dark") {
+//     applyScheme("light dark");
+//   }
+// });
