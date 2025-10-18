@@ -1,16 +1,16 @@
-// --- SINGLE THEME SWITCH (idempotent) ---
+
+
+console.log("IT'S ALIVE!", location.pathname);
+
 (function mountThemeSwitch() {
-  // If we've already mounted in this page context, bail
   if (window.__themeSwitchMounted) return;
   window.__themeSwitchMounted = true;
 
-  // If duplicates already exist in the DOM, keep the first and remove the rest
   const allExisting = Array.from(document.querySelectorAll('[data-theme-switch], label.color-scheme'));
   if (allExisting.length > 1) {
     allExisting.slice(1).forEach(el => el.remove());
   }
 
-  // Reuse existing switch if present, else create one
   let wrap = document.querySelector('[data-theme-switch], label.color-scheme');
   if (!wrap) {
     const prefersDark = matchMedia('(prefers-color-scheme: dark)').matches;
@@ -28,7 +28,6 @@
     `;
     document.body.insertAdjacentElement('afterbegin', wrap);
   } else {
-    // make sure our data attr is present for future checks
     wrap.setAttribute('data-theme-switch', '');
   }
 
@@ -56,7 +55,6 @@
     if (select.value === 'light dark') applyScheme('light dark');
   });
 
-  // When nav exists, keep the switch above it (nice placement)
   const observer = new MutationObserver(() => {
     const nav = document.querySelector('nav');
     if (nav && wrap.nextElementSibling !== nav) {
@@ -67,8 +65,6 @@
   observer.observe(document.body, { childList: true, subtree: true });
 })();
 
-
-console.log("IT'S ALIVE!", location.pathname);
 
 (function ensureThemeControl() {
 
