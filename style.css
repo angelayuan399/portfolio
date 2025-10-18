@@ -1,13 +1,13 @@
-/* Enable automatic dark mode at the root */
+
 html {
-  color-scheme: light dark;            /* supports light & dark */
-  background: canvas;                  /* system background color */
-  color: canvastext;                   /* system text color */
+  color-scheme: light dark;        
+  background: canvas;                
+  color: canvastext;                   
   --color-accent: oklch(87.156% 0.07488 352.855);
   accent-color: var(--color-accent);
 }
 
-/* Your existing body styles can stay as-is */
+
 body {
   max-width: 100ch;
   margin-inline: auto;
@@ -16,7 +16,6 @@ body {
   line-height: 1.5;
 }
 
-/* Nav styles; replace hard-coded borders with a var that works in both themes */
 nav {
   display: flex;
   margin-bottom: 1.5rem;
@@ -24,7 +23,6 @@ nav {
   border-bottom: 1px solid var(--border-color);
 }
 
-/* (Optional) You had these, they still apply */
 nav ul, nav li { display: contents; }
 
 nav a {
@@ -43,21 +41,16 @@ nav a.current {
   padding-bottom: calc(0.5em - 0.4em);
 }
 
-/* Fix the hover color to be theme-aware using color-mix + canvas */
-/* keep border as-is via --border-color var */
+
 nav a { background: transparent; }
 
-/* current tab should not have a filled background */
 nav a.current { background: transparent; }
 
-/* make hover very subtle in dark mode */
 nav a:hover {
   border-bottom-color: var(--color-accent);
-  /* was canvas 85%; lighten it so it doesn't look like a big pink pill */
   background-color: color-mix(in oklch, var(--color-accent), canvas 92%);
 }
 
-/* Quick styling for the theme control */
 label.color-scheme {
   display: inline-flex;
   gap: 0.5rem;
