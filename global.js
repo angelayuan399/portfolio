@@ -79,9 +79,7 @@ for (let { url, title } of pages) {
   nav.insertAdjacentHTML("beforeend", `<a href="${href}"${extra}>${title}</a>`);
 }
 
-/* -------------------------------------------------------------
-   HIGHLIGHT CURRENT PAGE LINK (/foo/ vs /foo/index.html)
-   ------------------------------------------------------------- */
+
 function normalize(pathname) {
   return pathname.endsWith("/") ? pathname + "index.html" : pathname;
 }
@@ -95,9 +93,9 @@ let currentLink = navLinks.find(
 currentLink?.classList.add("current");
 
 
-const prefersDarkMQ = window.matchMedia("(prefers-color-scheme: dark)");
-const prefersDark = prefersDarkMQ.matches;
-let autoLabel = `Automatic (${prefersDark ? "Dark" : "Light"})`;
+// const prefersDarkMQ = window.matchMedia("(prefers-color-scheme: dark)");
+// const prefersDark = prefersDarkMQ.matches;
+// let autoLabel = `Automatic (${prefersDark ? "Dark" : "Light"})`;
 
 document.body.insertAdjacentHTML(
   "afterbegin",
