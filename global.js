@@ -206,25 +206,3 @@ export async function fetchGitHubData(username) {
   return fetchJSON(`https://api.github.com/users/${encodeURIComponent(username)}`);
 }
 
-// existing in global.js
-const isLocal = ["localhost", "127.0.0.1"].includes(location.hostname);
-const isGitHubPages = location.hostname.endsWith("github.io");
-const REPO_NAME = "portfolio";
-export const BASE_PATH = isLocal ? "/" : (isGitHubPages ? `/${REPO_NAME}/` : "/");
-export function resolveAssetPath(path) {
-  if (!path) return "";
-  if (/^https?:\/\//i.test(path)) return path;          // absolute URL
-  const clean = String(path).replace(/^\/+/, "");        // strip leading slash
-  return BASE_PATH + clean;                              // prefix base path
-}
-import { resolveAssetPath } from './global.js'; // if renderProjects lives in global.js, just call it directly
-
-// inside renderProjects:
-const src = project.image ? resolveAssetPath(project.image) : "";
-article.innerHTML = `
-  <${tag}>${project.title ?? 'Untitled Project'}</${tag}>
-  ${src ? `<img src="${src}" alt="${project.title ?? 'Project image'}">` : ''}
-  <p>${project.description ?? ''}</p>
-`;
-
-
