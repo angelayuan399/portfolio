@@ -159,52 +159,79 @@ let currentLink = navLinks.find(
 currentLink?.classList.add("current");
 
 
-// const prefersDarkMQ = window.matchMedia("(prefers-color-scheme: dark)");
-// const prefersDark = prefersDarkMQ.matches;
-// let autoLabel = `Automatic (${prefersDark ? "Dark" : "Light"})`;
+// global.js
+export async function fetchJSON(url) {
+  try {
+    const response = await fetch(url, { headers: { "Accept": "application/json" } });
+    console.log(response); // Step 1.2 – inspect in DevTools
+    if (!response.ok) {
+      throw new Error(`Failed to fetch projects: ${response.status} ${response.statusText}`);
+    }
+    const data = await response.json(); // Step 1.2/1.3
+    return data;
+  } catch (error) {
+    console.error('Error fetching or parsing JSON data:', error);
+    return null; // callers can handle null
+  }
+}
 
-// document.body.insertAdjacentHTML(
-//   "afterbegin",
-//   `
-//   <label class="color-scheme">
-//     Theme:
-//     <select id="theme-select" aria-label="Color scheme">
-//       <option value="light dark">${autoLabel}</option>
-//       <option value="light">Light</option>
-//       <option value="dark">Dark</option>
-//     </select>
-//   </label>
-// `
-// );
+/**
+ * Render an array of project objects into the given container.
+ * @param {Array<Object>} projects - Array of { title, image, description, ... }.
+ * @param {HTMLElement} containerElement - The DOM node that will receive the projects.
+ * @param {string} [headingLevel='h2'] - One of 'h1'...'h6'.
+ */
+export function renderProjects(projects, containerElement, headingLevel = 'h2') {
+  // ---- validation & fallbacks ----
+  if (!(containerElement instanceof Element)) {
+    console.warn('renderProjects: invalid containerElement', containerElement);
+    return;
+  }
 
-// const select = document.querySelector("#theme-select");
+  const allowed = new Set(['h1','h2','h3','h4','h5','h6']);
+  const safeHeading = allowed.has(String(headingLevel).toLowerCase())
+    ? String(headingLevel).toLowerCase()
+    : 'h2';
 
-// function applyScheme(schemeValue) {
-//   document.documentElement.style.setProperty("color-scheme", schemeValue);
-//   if (select && select.value !== schemeValue) {
-//     select.value = schemeValue;
-//   }
-// }
+  // Clear previous content to avoid duplicates (Step 1.4 #2)
+  containerElement.innerHTML = '';
 
-// const saved = localStorage.colorScheme;
-// applyScheme(saved ? saved : "light dark");
-// if (saved) {
-//   select.value = saved;
-// }
+  // If projects is null, not an array, or empty → show placeholder
+  if (!Array.isArray(projects) || projects.length === 0) {
+    const empty = document.createElement('div');
+    empty.setAttribute('role', 'status');
+    empty.className = 'projects-empty';
+    empty.textContent = 'No projects to display yet.';
+    containerElement.appendChild(empty);
+    return;
+  }
 
-// select.addEventListener("input", (event) => {
-//   const value = event.target.value;            
-//   localStorage.colorScheme = value;            
-//   applyScheme(value);                        
-//   console.log("color scheme changed to", value);
-// });
+  // Create an <article> per project (Step 1.4 #3–5)
+  for (const project of projects) {
+    const article = document.createElement('article');
 
-// prefersDarkMQ.addEventListener?.("change", (e) => {
-//   const newLabel = `Automatic (${e.matches ? "Dark" : "Light"})`;
-//   const autoOption = select.querySelector('option[value="light dark"]');
-//   if (autoOption) autoOption.textContent = newLabel;
+    // Guard against missing fields (Step 1.4 #4 – graceful handling)
+    const title = project?.title ?? 'Untitled Project';
+    const desc  = project?.description ?? 'No description provided.';
+    const img   = project?.image;
 
-//   if (select.value === "light dark") {
-//     applyScheme("light dark");
-//   }
-// });
+    // Build dynamic heading level (Step 1.4 #6)
+    article.innerHTML = `
+      <${safeHeading}>${escapeHTML(title)}</${safeHeading}>
+      ${img ? `<img src="${encodeURI(img)}" alt="${escapeHTML(title)}">` : ''}
+      <p>${escapeHTML(desc)}</p>
+    `;
+
+    containerElement.appendChild(article);
+  }
+}
+
+/** Tiny helper to avoid injecting raw HTML from JSON */
+function escapeHTML(str) {
+  return String(str)
+    .replaceAll('&','&amp;')
+    .replaceAll('<','&lt;')
+    .replaceAll('>','&gt;')
+    .replaceAll('"','&quot;')
+    .replaceAll("'","&#39;");
+}
