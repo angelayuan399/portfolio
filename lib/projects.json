@@ -2,11 +2,12 @@
     {
         "title":"Bunny Sweater Launch",
         "year": "2024",
-        "image": "../images/bunnysweater.png",
+        "image": "/images/bunnysweater.png",
         "description":"Designed, sourced, and launched a sweater; 41 preorders and $1.5k profit."
     },
     {
-        "title": "Repellat adipisci reprehenderit debitis?",
+        "title": "Recipes and Ratings Analysis",
+        "year": "2025",
         "image": "https://vis-society.github.io/labs/2/images/empty.svg",
         "description": "Dolore cumque labore provident, nobis officiis, necessitatibus laboriosam aperiam, hic magnam repellendus repellat amet? Odio magnam ut reprehenderit adipisci nisi exercitationem ullam, cupiditate, nihil voluptates repudiandae voluptate minima voluptatibus pariatur."
     },
