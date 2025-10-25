@@ -62,3 +62,35 @@ label.color-scheme select {
   font: inherit;
   padding: 0.2rem 0.4rem;
 }
+#profile-stats {
+  border: 1px solid var(--border, #ddd);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  background: var(--panel, #fafafa);
+}
+
+#profile-stats h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1.1rem;
+}
+
+#profile-stats .stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* four equal columns */
+  gap: 0.25rem 1rem;
+  margin: 0;
+}
+
+#profile-stats .stats-grid dt,
+#profile-stats .stats-grid dd {
+  margin: 0;
+}
+
+#profile-stats .stats-grid dt {
+  font-weight: 600;
+  grid-row: 1; /* all terms on the first row */
+}
+
+#profile-stats .stats-grid dd {
+  grid-row: 2; /* all values on the second row */
+}
