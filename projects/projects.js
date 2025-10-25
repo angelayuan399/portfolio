@@ -11,20 +11,12 @@ try {
 
   // Step 1.6 – count projects and update the title
   const titleEl = document.querySelector('.projects-title');
-  if (titleEl) {
-    const count = Array.isArray(projects) ? projects.length : 0;
-    // Example: "Projects (7)"
-    titleEl.textContent = `${titleEl.textContent.replace(/\s*\(\d+\)$/, '')} (${count})`;
+  if (titleEl && Array.isArray(projects)) {
+    const count = projects.length;
+    // updates the heading text, e.g., “Projects (3)”
+    titleEl.textContent = `Projects (${count})`;
   }
 } catch (err) {
   console.error('projects.js error:', err);
 }
 
-// Select the <h1> with class="projects-title"
-const projectsTitle = document.querySelector('.projects-title');
-
-if (projectsTitle && Array.isArray(projects)) {
-  const count = projects.length;
-  // Update the title text dynamically
-  projectsTitle.textContent = `Projects (${count})`;
-}
