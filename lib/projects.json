@@ -1,4 +1,31 @@
 [
+
+
+    {
+        "title": "San Diego Bus Network: Routing & Wait-Time Simulation",
+        "year": "2025",
+        "image": "https://vis-society.github.io/labs/2/images/empty.svg",
+        "description": "Merged GTFS stops, trips, and schedules to build a detailed timetable; mapped lines on an interactive map; used BFS to find stop-to-stop routes; and simulated bus arrivals and passenger wait times to analyze service patterns and transit efficiency."
+    },
+    {
+        "title": "Deer Pendants",
+        "year": "2023",
+        "image": "https://vis-society.github.io/labs/2/images/empty.svg",
+        "description": "Worked with artisans to 3D design and metal smith deer pendants ."
+    },
+
+    {
+        "title": "Loan Analytics: Cleaning, Visualization, Taxes & Paradox",
+        "year": "2023",
+        "image": "https://vis-society.github.io/labs/2/images/empty.svg",
+        "description": "Cleaned loan records (dates/terms/titles), computed correlations, visualized interest rates by FICO band and term, ran a permutation test on personal‐statement effects, built federal/state tax brackets to estimate disposable income, and aggregated outcomes to surface a Simpson’s paradox example."
+    },
+    {
+        "title": "Recipes and Ratings Analysis",
+        "year": "2025",
+        "image": "../images/predicted_scatter.png",
+        "description": "Analyzed recipes containing nutrition facts and user ratings to explore whether a recipe’s carbohydrate content correlates with its total calories"
+    },
     {
         "title":"Bunny Sweater Launch",
         "year": "2024",
@@ -6,58 +33,45 @@
         "description":"Designed, sourced, and launched a sweater; 41 preorders and $1.5k profit."
     },
     {
-        "title": "Recipes and Ratings Analysis",
-        "year": "2025",
+        "title": "Image Processing Suite: RGB Ops, Premium Filters & KNN Classifier",
+        "year": "2023",
         "image": "https://vis-society.github.io/labs/2/images/empty.svg",
-        "description": "Dolore cumque labore provident, nobis officiis, necessitatibus laboriosam aperiam, hic magnam repellendus repellat amet? Odio magnam ut reprehenderit adipisci nisi exercitationem ullam, cupiditate, nihil voluptates repudiandae voluptate minima voluptatibus pariatur."
+        "description": "Implemented an RGB image class with safe getters/setters and helpers, a template + standard/premium processors (negate, grayscale, rotate, brightness, blur, tiling, sticker, edge highlight), and a KNN image classifier with Euclidean distance—complete with doctests, I/O helpers, and cost/coupon logic."
     },
     {
-        "title": "Quaerat dicta hic ducimus.",
+        "title": "TikTok Algorithm and Adolescent Mental Health",
+        "year": "2024",
         "image": "https://vis-society.github.io/labs/2/images/empty.svg",
-        "description": "Ratione modi, error quo sed nam cumque ipsam ipsa ex recusandae deserunt voluptate ipsum est doloremque molestiae rem delectus debitis nesciunt neque corrupti cum vero necessitatibus commodi reprehenderit quisquam? Recusandae."
+        "description": "Analyzed how TikTok’s recommendation system influences adolescent body image and anxiety by combining survey data with TikTok Research API metrics. Conducted regression, permutation, and sentiment analyses to examine correlations between exposure to fashion, fitness, and nutrition content and symptoms of body dysmorphia. Addressed data ethics through anonymization, consent, and bias mitigation, contributing to the hypothesis, ethics, and discussion sections."
     },
-    {
-        "title": "Sequi minima nesciunt vel!",
-        "image": "https://vis-society.github.io/labs/2/images/empty.svg",
-        "description": "Quia tempore molestiae omnis dolorum corrupti consequuntur minus eligendi distinctio itaque libero suscipit corporis optio, reiciendis dolore cupiditate dolores aut similique quaerat laudantium? Aliquam nihil id itaque vero, totam tempora?"
-    },
-    {
-        "title": "Ratione blanditiis ullam delectus.",
-        "image": "https://vis-society.github.io/labs/2/images/empty.svg",
-        "description": "Non neque magnam commodi architecto, repellendus mollitia pariatur et! Exercitationem omnis est, alias, iusto quibusdam asperiores officia eius esse repudiandae vitae in sint magnam saepe sit consectetur architecto dolores unde."
-    },
-    {
-        "title": "Ipsum consequatur officiis consectetur.",
-        "image": "https://vis-society.github.io/labs/2/images/empty.svg",
-        "description": "Error qui eaque quo officia architecto officiis molestias, est et doloribus dicta debitis magnam nisi, consectetur laboriosam illum possimus expedita consequatur cum modi dolor repudiandae? Nemo harum quibusdam velit placeat."
-    },
-    {
-        "title": "Atque, voluptas? Adipisci, optio!",
-        "image": "https://vis-society.github.io/labs/2/images/empty.svg",
-        "description": "Hic expedita voluptates, quis maxime consequatur mollitia eligendi voluptate excepturi distinctio cum laborum repellendus incidunt soluta! Recusandae quod similique explicabo eos deserunt qui? Eaque dolor perferendis laborum exercitationem, assumenda quos."
-    },
+
     {
         "title": "A ipsam hic doloribus.",
+        "year": "2025",
         "image": "https://vis-society.github.io/labs/2/images/empty.svg",
         "description": "Unde, adipisci temporibus ducimus eligendi eius deserunt quidem tenetur, minus, distinctio alias voluptate optio maiores. Incidunt dolore tempora nihil magni excepturi at nobis ab accusantium explicabo quos. Repellendus, modi doloribus."
     },
     {
         "title": "Inventore quas magni dicta?",
+        "year": "2022",
         "image": "https://vis-society.github.io/labs/2/images/empty.svg",
         "description": "Omnis est laboriosam, deleniti consequuntur libero distinctio. In facilis mollitia laudantium aperiam expedita libero similique tempore blanditiis laboriosam officiis, hic aliquam ipsum quas, non atque natus iusto ratione beatae unde."
     },
     {
         "title": "Illum aliquid illo soluta!",
+        "year": "2024",
         "image": "https://vis-society.github.io/labs/2/images/empty.svg",
         "description": "Dolorum deleniti nostrum sed ipsum alias cupiditate sunt explicabo odio illum fuga veritatis vero optio rem corporis maxime repellendus quae quidem velit, dolor commodi sapiente voluptas reprehenderit! Molestias, totam expedita."
     },
     {
         "title": "Enim aliquid pariatur accusamus.",
+        "year": "2025",
         "image": "https://vis-society.github.io/labs/2/images/empty.svg",
         "description": "Odio maiores vero, eum eligendi excepturi soluta molestias dolorem ratione totam error a aliquam. Est enim minima saepe ea hic nam obcaecati blanditiis molestias unde cum quaerat, commodi excepturi reprehenderit."
     },
     {
         "title": "Expedita quod debitis rerum.",
+        "year": "2022",
         "image": "https://vis-society.github.io/labs/2/images/empty.svg",
         "description": "Magni quas soluta optio ducimus modi accusamus, sit blanditiis qui earum omnis rerum itaque repellendus officia harum enim temporibus illum veritatis necessitatibus ipsum laborum quisquam excepturi tempora. Excepturi, voluptates nesciunt."
     }
