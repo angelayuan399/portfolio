@@ -162,16 +162,20 @@ currentLink?.classList.add("current");
 // global.js
 export async function fetchJSON(url) {
   try {
-    const response = await fetch(url, { headers: { "Accept": "application/json" } });
-    console.log(response); // Step 1.2 – inspect in DevTools
+    // Fetch the JSON file from the given URL
+    const response = await fetch(url);
+    console.log(response); // inspect in DevTools
+
+    // Ensure response is OK
     if (!response.ok) {
-      throw new Error(`Failed to fetch projects: ${response.status} ${response.statusText}`);
+      throw new Error(`Failed to fetch projects: ${response.statusText}`);
     }
-    const data = await response.json(); // Step 1.2/1.3
+
+    // Parse JSON and return it
+    const data = await response.json();
     return data;
   } catch (error) {
     console.error('Error fetching or parsing JSON data:', error);
-    return null; // callers can handle null
   }
 }
 
@@ -203,77 +207,9 @@ export function renderProjects(projects, containerElement, headingLevel = 'h2') 
 }
 // Step 3.2 — uses your existing fetchJSON helper
 export async function fetchGitHubData(username) {
-  return fetchJSON(`https://api.github.com/users/${encodeURIComponent(username)}`);
+  // return statement here
+  return fetchJSON(`https://api.github.com/users/${username}`);
 }
 
 
-// ---------- base-path helpers (keep your existing values if you already have them) ----------
-const isLocal = ["localhost", "127.0.0.1"].includes(location.hostname);
-const isGitHubPages = location.hostname.endsWith("github.io");
-const REPO_NAME = "portfolio";
-export const BASE_PATH = isLocal ? "/" : (isGitHubPages ? `/${REPO_NAME}/` : "/");
 
-// Resolve images like "/images/foo.png" so they work on both localhost and GH Pages
-export function resolveAssetPath(path) {
-  if (!path) return "";
-  if (/^https?:\/\//i.test(path)) return path;
-  const clean = String(path).replace(/^\/+/, ""); // strip leading slash(s)
-  return BASE_PATH + clean;
-}
-
-// ---------- robust fetch ----------
-export async function fetchJSON(url, options = {}) {
-  try {
-    const response = await fetch(url, {
-      headers: { "Accept": "application/json", ...(options.headers || {}) },
-      cache: "no-store", // avoid stale responses (esp. GitHub API)
-      ...options
-    });
-    // Helpful to see what's happening
-    console.log("[fetchJSON]", response.url, response.status, response.statusText);
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch: ${response.status} ${response.statusText}`);
-    }
-    return await response.json();
-  } catch (err) {
-    console.error("Error fetching or parsing JSON:", err);
-    return null;
-  }
-}
-
-// ---------- GitHub API helper ----------
-export async function fetchGitHubData(username) {
-  const url = `https://api.github.com/users/${encodeURIComponent(username)}?t=${Date.now()}`;
-  return fetchJSON(url, { headers: { "Accept": "application/vnd.github+json" } });
-}
-
-// ---------- renderProjects (uses resolveAssetPath so images work on every page) ----------
-export function renderProjects(projects, containerElement, headingLevel = "h2") {
-  if (!(containerElement instanceof Element)) return;
-
-  containerElement.innerHTML = "";
-
-  const allowed = new Set(["h1","h2","h3","h4","h5","h6"]);
-  const tag = allowed.has(String(headingLevel).toLowerCase()) ? String(headingLevel).toLowerCase() : "h2";
-
-  if (!Array.isArray(projects) || projects.length === 0) {
-    const empty = document.createElement("div");
-    empty.className = "projects-empty";
-    empty.textContent = "No projects to display yet.";
-    containerElement.appendChild(empty);
-    return;
-  }
-
-  for (const p of projects) {
-    const article = document.createElement("article");
-    const src = p?.image ? resolveAssetPath(p.image) : "";
-
-    article.innerHTML = `
-      <${tag}>${p?.title ?? "Untitled Project"}</${tag}>
-      ${src ? `<img src="${src}" alt="${(p?.title ?? "Project").replace(/"/g, "&quot;")}">` : ""}
-      <p>${p?.description ?? ""}</p>
-    `;
-    containerElement.appendChild(article);
-  }
-}

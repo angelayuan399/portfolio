@@ -32,4 +32,3 @@ if (profileStats && githubData) {
   `;
 }
 
-
