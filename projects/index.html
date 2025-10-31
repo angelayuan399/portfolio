@@ -1,25 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Projects</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Projects</title>
 
-  <link rel="stylesheet" href="../style.css" />
-  <link rel="stylesheet" href="./projects.css" />
+    <link rel="stylesheet" href="../style.css" />
+    <link rel="stylesheet" href="./projects.css" />
+  </head>
+  <body>
+    <h1 class="projects-title">Projects</h1>
 
-  <script type="module" src="../global.js"></script>
-</head>
-<body>
+    <!-- the D3 pie lives here -->
+    <svg id="projects-pie-plot" viewBox="-50 -50 100 100"></svg>
 
+    <!-- your existing projects list -->
+    <div class="projects"></div>
 
-<h1 class="projects-title">Projects</h1>
-<div class="projects"></div>
-
-<!-- load as ES modules -->
-<script src="../global.js" type="module"></script>
-<script src="projects.js" type="module"></script>
-
-
-</body>
+    <!-- load as ES modules (once) -->
+    <script src="../global.js" type="module"></script>
+    <script src="./projects.js" type="module"></script>
+  </body>
 </html>

@@ -182,11 +182,11 @@ export async function fetchJSON(url) {
 export function renderProjects(projects, containerElement, headingLevel = 'h2') {
   containerElement.innerHTML = ''; // avoid duplicates
 
-  // validate headingLevel; fall back to h2 if invalid
   const allowed = new Set(['h1','h2','h3','h4','h5','h6']);
-  const tag = allowed.has(String(headingLevel).toLowerCase()) ? String(headingLevel).toLowerCase() : 'h2';
+  const tag = allowed.has(String(headingLevel).toLowerCase())
+    ? String(headingLevel).toLowerCase()
+    : 'h2';
 
-  // empty state
   if (!Array.isArray(projects) || projects.length === 0) {
     const empty = document.createElement('div');
     empty.className = 'projects-empty';
@@ -197,19 +197,21 @@ export function renderProjects(projects, containerElement, headingLevel = 'h2') 
 
   for (const project of projects) {
     const article = document.createElement('article');
+
+    // build the “text block” (desc + year) in ONE div so they stay in the same grid cell
+    const yearHTML = project.year
+      ? `<p class="project-year">c. ${project.year}</p>`
+      : '';
+
     article.innerHTML = `
       <${tag}>${project.title ?? 'Untitled Project'}</${tag}>
       ${project.image ? `<img src="${project.image}" alt="${project.title ?? 'Project image'}">` : ''}
-      <p>${project.description ?? ''}</p>
+      <div class="project-body">
+        <p>${project.description ?? ''}</p>
+        ${yearHTML}
+      </div>
     `;
+
     containerElement.appendChild(article);
   }
 }
-// Step 3.2 — uses your existing fetchJSON helper
-export async function fetchGitHubData(username) {
-  // return statement here
-  return fetchJSON(`https://api.github.com/users/${username}`);
-}
-
-
-
