@@ -94,3 +94,9 @@ label.color-scheme select {
 #profile-stats .stats-grid dd {
   grid-row: 2; /* all values on the second row */
 }
+
+#projects-pie-plot {
+  max-width: 20em;
+  margin-block: 2em;
+  overflow: visible;
+}

@@ -61,8 +61,5 @@ h1 {
   margin: 0.25em 0 0.5em;
 }
 
-#projects-pie-plot {
-  max-width: 20rem;
-  margin-block: 2rem;
-  overflow: visible;
-}
+/* pie on projects page */
+
