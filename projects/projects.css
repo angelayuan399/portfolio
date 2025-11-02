@@ -130,23 +130,24 @@ h1 {
 }
 
 /* Step 2.3: put pie + legend side by side */
+/* Step 2.3: layout container */
 .pie-and-legend {
   display: flex;
   gap: 2rem;
   align-items: flex-start;
   margin-block: 2rem;
-  flex-wrap: wrap; /* so it stacks on small screens */
+  flex-wrap: wrap;
 }
 
-/* keep svg reasonable */
+/* keep pie reasonable */
 #projects-pie-plot {
   max-width: 20em;
   overflow: visible;
 }
 
-/* legend container */
+/* remove bullet points and make into grid */
 .legend {
-  list-style: none;
+  list-style: none;               /* removes default bullets ✅ */
   margin: 0;
   padding: 1rem;
   border: 1px solid #ddd;
@@ -154,11 +155,11 @@ h1 {
   display: grid;
   gap: 1rem;
   grid-template-columns: repeat(auto-fill, minmax(9em, 1fr));
-  flex: 1; /* take remaining width */
+  flex: 1;
   background: #fff;
 }
 
-/* each legend row */
+/* style each legend item */
 .legend-item {
   display: flex;
   align-items: center;
@@ -167,11 +168,11 @@ h1 {
   font-size: 0.9rem;
 }
 
-/* the colored square */
+/* color square (swatch) */
 .legend-item .swatch {
   width: 1rem;
   height: 1rem;
   display: inline-block;
-  background: var(--color);
+  background: var(--color);      /* pulled from inline D3 style */
   border-radius: 0.35rem;
 }
