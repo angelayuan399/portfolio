@@ -1,29 +1,8 @@
-// projects/projects.js
-
-// lab way of importing D3:
+// Import D3 and our helpers
 import * as d3 from 'https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm';
+import { fetchJSON, renderProjects } from '../global.js';
 
-// we still want your helpers from the previous step
-import { renderProjects, fetchJSON } from '../global.js';
-
-// -----------------------------------------------------
-// Step 1.3–1.5: draw the pie in the existing <svg>
-// -----------------------------------------------------
-
-// select the svg we added in index.html
-const svg = d3.select('#projects-pie-plot');
-
-// the HTML example had a <circle>. once we switch to d3 paths,
-// we can remove it so it doesn’t sit on top:
-svg.selectAll('circle').remove();
-
-// arc generator = “how to draw each slice”
-const arcGenerator = d3
-  .arc()
-  .innerRadius(0)     // 0 = pie, >0 = donut
-  .outerRadius(50);   // matches the r=50 from the HTML example
-
-// Step 2.1: data with labels
+// Step 2.1: Data with labels
 const data = [
   { value: 1, label: 'apples' },
   { value: 2, label: 'oranges' },
@@ -33,26 +12,29 @@ const data = [
   { value: 5, label: 'cherries' },
 ];
 
-/* ------------------------------
-   Step 1.3–2.1: pie from labeled data
------------------------------- */
+// Select the SVG and set up generators
 const svg = d3.select('#projects-pie-plot');
 
-// remove the starter circle
+// Remove any existing circles
 svg.selectAll('circle').remove();
 
-const arcGenerator = d3.arc().innerRadius(0).outerRadius(50);
+// Create arc generator for pie slices
+const arcGenerator = d3
+  .arc()
+  .innerRadius(0)
+  .outerRadius(50);
 
-// tell the pie how to read { value, label }
-const sliceGenerator = d3.pie().value((d) => d.value);
+// Create pie generator that uses the value property
+const sliceGenerator = d3.pie()
+  .value(d => d.value);
 
-// this now contains start/end angles AND our original object in d.data
+// Generate the pie data
 const arcData = sliceGenerator(data);
 
-// color scale
+// Set up color scale
 const colors = d3.scaleOrdinal(d3.schemeTableau10);
 
-// draw slices
+// Draw the pie slices
 svg
   .selectAll('path')
   .data(arcData)
@@ -60,42 +42,28 @@ svg
   .attr('d', arcGenerator)
   .attr('fill', (d, i) => colors(i));
 
-/* ------------------------------
-   Step 2.2: create legend <li> with D3
------------------------------- */
+// Step 2.2: Create legend
 const legend = d3.select('.legend');
 
+// Add legend items
 data.forEach((d, idx) => {
   legend
     .append('li')
-    .attr('style', `--color:${colors(idx)}`)
     .attr('class', 'legend-item')
-    .html(
-      `<span class="swatch"></span> ${d.label} <em>(${d.value})</em>`
-    );
+    .attr('style', `--color: ${colors(idx)}`)
+    .html(`
+      <span class="swatch"></span>
+      ${d.label} <em>(${d.value})</em>
+    `);
 });
 
-// -----------------------------------------------------
-// Step 0.1 stuff: show projects with year
-// -----------------------------------------------------
-(async () => {
-  const container = document.querySelector('.projects');
-  if (!container) return;
+// Project list rendering
+const projectsContainer = document.querySelector('.projects');
+const projects = await fetchJSON('../lib/projects.json');
+renderProjects(projects, projectsContainer, 'h2');
 
-  const projects = await fetchJSON('../lib/projects.json').catch(() => null);
-
-  const fallback = [
-    {
-      title: 'Lorem ipsum dolor sit.',
-      description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit.',
-      year: 2024
-    },
-    {
-      title: 'Architecto minima sed omnis?',
-      description: 'Tempora dignissimos exercitationem.',
-      year: 2024
-    }
-  ];
-
-  renderProjects(projects ?? fallback, container, 'h2');
-})();
+// Update title if needed
+const titleEl = document.querySelector('.projects-title');
+if (titleEl && Array.isArray(projects)) {
+  titleEl.textContent = `Projects (${projects.length})`;
+}
