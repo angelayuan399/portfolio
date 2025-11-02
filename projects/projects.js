@@ -50,22 +50,20 @@ svg
   const container = document.querySelector('.projects');
   if (!container) return;
 
-  // change this path if your JSON is somewhere else
-  const projects = await fetchJSON('./projects.json').catch(() => null);
+  const projects = await fetchJSON('../lib/projects.json').catch(() => null);
 
   const fallback = [
     {
       title: 'Lorem ipsum dolor sit.',
       description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit.',
-      year: 2024,
+      year: 2024
     },
     {
       title: 'Architecto minima sed omnis?',
       description: 'Tempora dignissimos exercitationem.',
-      year: 2024,
-    },
+      year: 2024
+    }
   ];
 
-  // uses the renderProjects you have in global.js (the one with the year)
   renderProjects(projects ?? fallback, container, 'h2');
 })();
