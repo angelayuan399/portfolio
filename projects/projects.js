@@ -23,16 +23,24 @@ const arcGenerator = d3
   .innerRadius(0)     // 0 = pie, >0 = donut
   .outerRadius(50);   // matches the r=50 from the HTML example
 
-// Step 1.4/1.5: use data
-const data = [1, 2, 3, 4, 5, 5];
+// Step 2.1: data with labels
+const data = [
+  { value: 1, label: 'apples' },
+  { value: 2, label: 'oranges' },
+  { value: 3, label: 'mangos' },
+  { value: 4, label: 'pears' },
+  { value: 5, label: 'limes' },
+  { value: 5, label: 'cherries' },
+];
 
-// d3.pie() turns [1,2,3,...] into angle objects
-const sliceGenerator = d3.pie();
+// pie generator now uses object values
+const sliceGenerator = d3.pie()
+  .value(d => d.value);
 
-// array of objects: {startAngle, endAngle, value, index, ...}
+// array of objects with angles and original data
 const arcData = sliceGenerator(data);
 
-// color scale (lab says to switch to d3 scales)
+// color scale for both pie and legend
 const colors = d3.scaleOrdinal(d3.schemeTableau10);
 
 // create one <path> per slice
@@ -42,6 +50,20 @@ svg
   .join('path')
   .attr('d', arcGenerator)
   .attr('fill', (d, i) => colors(i));
+
+// Step 2.2: Create legend
+const legend = d3.select('.legend');
+
+data.forEach((d, idx) => {
+  legend
+    .append('li')
+    .attr('class', 'legend-item')
+    .attr('style', `--color: ${colors(idx)}`)
+    .html(`
+      <span class="swatch"></span>
+      ${d.label} <em>(${d.value})</em>
+    `);
+});
 
 // -----------------------------------------------------
 // Step 0.1 stuff: show projects with year
