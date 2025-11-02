@@ -33,17 +33,26 @@ const data = [
   { value: 5, label: 'cherries' },
 ];
 
-// pie generator now uses object values
-const sliceGenerator = d3.pie()
-  .value(d => d.value);
+/* ------------------------------
+   Step 1.3–2.1: pie from labeled data
+------------------------------ */
+const svg = d3.select('#projects-pie-plot');
 
-// array of objects with angles and original data
+// remove the starter circle
+svg.selectAll('circle').remove();
+
+const arcGenerator = d3.arc().innerRadius(0).outerRadius(50);
+
+// tell the pie how to read { value, label }
+const sliceGenerator = d3.pie().value((d) => d.value);
+
+// this now contains start/end angles AND our original object in d.data
 const arcData = sliceGenerator(data);
 
-// color scale for both pie and legend
+// color scale
 const colors = d3.scaleOrdinal(d3.schemeTableau10);
 
-// create one <path> per slice
+// draw slices
 svg
   .selectAll('path')
   .data(arcData)
@@ -51,18 +60,19 @@ svg
   .attr('d', arcGenerator)
   .attr('fill', (d, i) => colors(i));
 
-// Step 2.2: Create legend
+/* ------------------------------
+   Step 2.2: create legend <li> with D3
+------------------------------ */
 const legend = d3.select('.legend');
 
 data.forEach((d, idx) => {
   legend
     .append('li')
+    .attr('style', `--color:${colors(idx)}`)
     .attr('class', 'legend-item')
-    .attr('style', `--color: ${colors(idx)}`)
-    .html(`
-      <span class="swatch"></span>
-      ${d.label} <em>(${d.value})</em>
-    `);
+    .html(
+      `<span class="swatch"></span> ${d.label} <em>(${d.value})</em>`
+    );
 });
 
 // -----------------------------------------------------
