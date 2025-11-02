@@ -2,19 +2,28 @@
 import { fetchJSON, renderProjects, fetchGitHubData } from './global.js';
 
 /* ---- Step 2 (home page latest projects) ---- */
-const projects = await fetchJSON('./lib/projects.json');
-const latestProjects = Array.isArray(projects) ? projects.slice(0, 3) : [];
-const projectsContainer = document.querySelector('.projects');
-renderProjects(latestProjects, projectsContainer, 'h2');
+let latestProjects = [];
+try {
+  // root page -> JSON is in /lib
+  const projects = await fetchJSON('./lib/projects.json');
+  if (Array.isArray(projects)) {
+    latestProjects = projects.slice(0, 3);
+  }
+} catch (err) {
+  console.error('Failed to load projects for home page:', err);
+}
+
+const projectsContainer = document.querySelector('.projects');  // <- make sure this matches index.html
+if (projectsContainer) {
+  // even if we got 0 projects, render to avoid blank layout
+  renderProjects(latestProjects, projectsContainer, 'h2');
+}
 
 /* ---- Step 3/4/5 (GitHub stats) ---- */
-// Replace with YOUR username (e.g., 'angelayuan399')
 const githubData = await fetchGitHubData('angelayuan399');
 
-// Step 4 — select container
 const profileStats = document.querySelector('#profile-stats');
 
-// Step 5 — update HTML
 if (profileStats && githubData) {
   profileStats.innerHTML = `
     <h2>GitHub Profile Stats</h2>
@@ -31,4 +40,3 @@ if (profileStats && githubData) {
     <p>Unable to load stats right now.</p>
   `;
 }
-
