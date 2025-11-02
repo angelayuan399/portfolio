@@ -10,107 +10,163 @@ const legend = d3.select('.legend');
 const projectsContainer = document.querySelector('.projects');
 const searchInput = document.querySelector('.searchBar');
 
-// we'll store ALL projects here
+// global state
 let allProjects = [];
+let currentQuery = '';
+let selectedIndex = -1;     // -1 = nothing selected
+let selectedLabel = null;   // e.g. '2024'
+
+// --------------------------------------------------
+// helpers
+// --------------------------------------------------
+function filterProjectsByQuery(projects, query) {
+  const needle = query.trim().toLowerCase();
+  if (!needle) return projects;
+  return projects.filter((project) => {
+    const values = Object.values(project).join('\n').toLowerCase();
+    return values.includes(needle);
+  });
+}
 
 /**
- * renderPieChart(projectsGiven)
- * plots a pie + legend for whatever subset you pass in
+ * Given the "base" list (i.e. after search), return
+ * either the whole thing (no slice selected)
+ * or only the projects for the selected year
  */
-function renderPieChart(projectsGiven) {
-  // clear old stuff
+function applySelectedYear(projects) {
+  if (selectedIndex === -1 || !selectedLabel) {
+    return projects;
+  }
+  return projects.filter((p) => String(p.year ?? 'Unknown') === selectedLabel);
+}
+
+/**
+ * Render the pie + legend for a given "base" set of projects
+ * (i.e. projects AFTER the search, but BEFORE year filter)
+ * and highlight whichever slice is currently selected.
+ */
+function renderPieChart(baseProjects) {
+  // clear old
   svg.selectAll('path').remove();
   svg.selectAll('circle').remove();
   legend.selectAll('li').remove();
 
-  if (!Array.isArray(projectsGiven) || projectsGiven.length === 0) {
-    // nothing to plot
-    return;
-  }
+  if (!Array.isArray(baseProjects) || baseProjects.length === 0) return;
 
-  // Step 3.1 — group by year
+  // group by year
   const rolled = d3.rollups(
-    projectsGiven,
+    baseProjects,
     (v) => v.length,
     (d) => d.year ?? 'Unknown'
   );
 
-  // to [{ value, label }]
+  // [{ label, value }]
   const data = rolled.map(([year, count]) => ({
-    value: count,
     label: String(year),
+    value: count,
   }));
 
-  // arc + pie
+  // generators
   const arcGenerator = d3.arc().innerRadius(0).outerRadius(50);
   const sliceGenerator = d3.pie().value((d) => d.value);
   const arcData = sliceGenerator(data);
 
   const colors = d3.scaleOrdinal(d3.schemeTableau10);
 
-  // draw pie
-  svg
+  // draw slices
+  const paths = svg
     .selectAll('path')
     .data(arcData)
     .join('path')
     .attr('d', arcGenerator)
-    .attr('fill', (d, i) => colors(i));
+    .attr('fill', (d, i) => colors(i))
+    .attr('class', (d, i) => (i === selectedIndex ? 'selected' : ''))
+    .style('cursor', 'pointer')
+    .on('click', (_, dObj) => {
+      const i = arcData.indexOf(dObj);
+
+      // toggle
+      if (selectedIndex === i) {
+        // deselect
+        selectedIndex = -1;
+        selectedLabel = null;
+      } else {
+        selectedIndex = i;
+        selectedLabel = data[i].label;
+      }
+
+      // re-render projects based on NEW selection
+      updateView();
+    });
 
   // build legend
   data.forEach((d, idx) => {
     legend
       .append('li')
-      .attr('class', 'legend-item')
+      .attr('class', `legend-item ${idx === selectedIndex ? 'selected' : ''}`)
       .attr('style', `--color:${colors(idx)}`)
       .html(
         `<span class="swatch"></span> ${d.label} <em>(${d.value})</em>`
-      );
+      )
+      .on('click', () => {
+        // same toggle logic for legend
+        if (selectedIndex === idx) {
+          selectedIndex = -1;
+          selectedLabel = null;
+        } else {
+          selectedIndex = idx;
+          selectedLabel = d.label;
+        }
+        updateView();
+      });
   });
 }
 
 /**
- * filter helper — search across all project values, case-insensitive
+ * Main render pipeline:
+ * 1. start from ALL projects
+ * 2. apply search
+ * 3. render pie based on search-only set
+ * 4. apply selected year to produce FINAL visible list
+ * 5. renderProjects(final)
  */
-function filterProjects(projects, query) {
-  const needle = query.trim().toLowerCase();
-  if (!needle) return projects;
+function updateView() {
+  // 1) search
+  const searchFiltered = filterProjectsByQuery(allProjects, currentQuery);
 
-  return projects.filter((project) => {
-    // join all values into 1 string
-    const values = Object.values(project).join('\n').toLowerCase();
-    return values.includes(needle);
-  });
-}
+  // 2) pie is always based on "what I'm currently seeing after search"
+  renderPieChart(searchFiltered);
 
-(async () => {
-  // 2) fetch your real projects
-  const projects = await fetchJSON('../lib/projects.json').catch(() => null);
-  allProjects = Array.isArray(projects) ? projects : [];
+  // 3) now apply year selection to that set
+  const finalVisible = applySelectedYear(searchFiltered);
 
-  // render the actual project cards
-  renderProjects(allProjects, projectsContainer, 'h2');
+  // 4) render cards
+  renderProjects(finalVisible, projectsContainer, 'h2');
 
-  // optional: update heading
+  // 5) update title
   const titleEl = document.querySelector('.projects-title');
   if (titleEl) {
-    titleEl.textContent = `Projects (${allProjects.length})`;
+    titleEl.textContent = `Projects (${finalVisible.length})`;
   }
+}
 
- 
-  renderPieChart(allProjects);
+// --------------------------------------------------
+// init
+// --------------------------------------------------
+(async () => {
+  allProjects =
+    (await fetchJSON('../lib/projects.json').catch(() => null)) ?? [];
 
+  // initial render
+  updateView();
+
+  // search listener
   if (searchInput) {
-    // use 'input' for real-time; change to 'change' if you want only on blur
     searchInput.addEventListener('input', (event) => {
-      const query = event.target.value || '';
-
-      const filtered = filterProjects(allProjects, query);
-
-      // re-render cards
-      renderProjects(filtered, projectsContainer, 'h2');
-
-      // re-render pie + legend with ONLY visible projects
-      renderPieChart(filtered);
+      currentQuery = event.target.value || '';
+      // when we type, we do NOT reset the selected year;
+      // we just narrow down the pool
+      updateView();
     });
   }
 })();

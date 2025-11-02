@@ -186,3 +186,27 @@ h1 {
   border-radius: 9999px;
   margin-bottom: 1.5rem;
 }
+
+/* fade non-hovered wedges when ANY path is hovered */
+#projects-pie-plot:has(path:hover) path:not(:hover) {
+  opacity: 0.5;
+}
+
+#projects-pie-plot path {
+  transition: 300ms;
+  cursor: pointer;
+}
+
+/* selected state for both pie slice and legend item */
+.selected {
+  --color: oklch(60% 0.45 0); /* use any clear, bright color you want */
+}
+
+#projects-pie-plot path.selected {
+  fill: var(--color);
+}
+
+.legend-item.selected {
+  background: rgba(0, 0, 0, 0.04);
+  border-radius: 0.5rem;
+}
