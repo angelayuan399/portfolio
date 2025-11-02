@@ -66,51 +66,7 @@ console.log("IT'S ALIVE!", location.pathname);
 })();
 
 
-(function ensureThemeControl() {
-
-  if (document.querySelector("#theme-select")) return;
-
-  const prefersDark = matchMedia("(prefers-color-scheme: dark)").matches;
-  const autoLabel = `Automatic (${prefersDark ? "Dark" : "Light"})`;
-
-  document.body.insertAdjacentHTML(
-    "afterbegin",
-    `
-    <label class="color-scheme">
-      Theme:
-      <select id="theme-select" aria-label="Color scheme">
-        <option value="light dark">${autoLabel}</option>
-        <option value="light">Light</option>
-        <option value="dark">Dark</option>
-      </select>
-    </label>
-    `
-  );
-
-  const select = document.querySelector("#theme-select");
-
-  function applyScheme(value) {
-    document.documentElement.style.setProperty("color-scheme", value);
-    if (select.value !== value) select.value = value;
-  }
-
-  const saved = localStorage.colorScheme;
-  applyScheme(saved ? saved : "light dark");
-  if (saved) select.value = saved;
-
-  select.addEventListener("input", (e) => {
-    const value = e.target.value;       
-    localStorage.colorScheme = value;
-    applyScheme(value);
-    console.log("color scheme changed to", value);
-  });
-
-  matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change", (e) => {
-    const autoOption = select.querySelector('option[value="light dark"]');
-    if (autoOption) autoOption.textContent = `Automatic (${e.matches ? "Dark" : "Light"})`;
-    if (select.value === "light dark") applyScheme("light dark");
-  });
-})();
+// Theme control is handled by mountThemeSwitch above
 
 
 function $$(selector, context = document) {
@@ -213,5 +169,20 @@ export function renderProjects(projects, containerElement, headingLevel = 'h2') 
     `;
 
     containerElement.appendChild(article);
+  }
+}
+
+export async function fetchGitHubData(username) {
+  if (!username) return null;
+  
+  try {
+    const response = await fetch(`https://api.github.com/users/${username}`);
+    if (!response.ok) {
+      throw new Error(`GitHub API error: ${response.statusText}`);
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching GitHub data:', error);
+    return null;
   }
 }
