@@ -5,22 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Projects</title>
 
-    <!-- lab: we keep using the shared styles -->
+    <!-- lab: shared styles -->
     <link rel="stylesheet" href="../style.css" />
 
-    <!-- we still need your global.js for nav + renderProjects from step 0.1 -->
+    <!-- nav + helpers -->
     <script type="module" src="../global.js"></script>
   </head>
   <body>
     <h1 class="projects-title">Projects</h1>
 
-    <!-- Step 1.1: SVG is in the HTML -->
-    <svg id="projects-pie-plot" viewBox="-50 -50 100 100">
-      <!-- lab shows this red circle first; we’ll delete it in JS later -->
-      <circle cx="0" cy="0" r="50" fill="red" />
-    </svg>
+    <!-- wrap svg + legend -->
+    <div class="pie-and-legend">
+      <!-- Step 1.1: SVG is in the HTML -->
+      <svg id="projects-pie-plot" viewBox="-50 -50 100 100">
+        <!-- lab shows this red circle first; JS will delete it -->
+        <circle cx="0" cy="0" r="50" fill="red" />
+      </svg>
 
-    <!-- Step 0.1 list of projects lives here -->
+      <!-- Step 2.2: empty legend for D3 to fill -->
+      <ul class="legend"></ul>
+    </div>
+
+    <!-- Step 0.1 project list -->
     <div class="projects"></div>
 
     <!-- page-specific logic -->

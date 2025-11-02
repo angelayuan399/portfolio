@@ -12,29 +12,25 @@ const data = [
   { value: 5, label: 'cherries' },
 ];
 
-// Select the SVG and set up generators
+// Select the SVG
 const svg = d3.select('#projects-pie-plot');
 
-// Remove any existing circles
+// Remove starter circle
 svg.selectAll('circle').remove();
 
-// Create arc generator for pie slices
-const arcGenerator = d3
-  .arc()
-  .innerRadius(0)
-  .outerRadius(50);
+// Arc generator
+const arcGenerator = d3.arc().innerRadius(0).outerRadius(50);
 
-// Create pie generator that uses the value property
-const sliceGenerator = d3.pie()
-  .value(d => d.value);
+// Pie generator that reads d.value
+const sliceGenerator = d3.pie().value((d) => d.value);
 
-// Generate the pie data
+// Angles
 const arcData = sliceGenerator(data);
 
-// Set up color scale
+// Color scale
 const colors = d3.scaleOrdinal(d3.schemeTableau10);
 
-// Draw the pie slices
+// Draw slices
 svg
   .selectAll('path')
   .data(arcData)
@@ -42,27 +38,25 @@ svg
   .attr('d', arcGenerator)
   .attr('fill', (d, i) => colors(i));
 
-// Step 2.2: Create legend
+// Step 2.2: Legend
 const legend = d3.select('.legend');
 
-// Add legend items
 data.forEach((d, idx) => {
   legend
     .append('li')
     .attr('class', 'legend-item')
-    .attr('style', `--color: ${colors(idx)}`)
-    .html(`
-      <span class="swatch"></span>
-      ${d.label} <em>(${d.value})</em>
-    `);
+    .attr('style', `--color:${colors(idx)}`)
+    .html(
+      `<span class="swatch"></span> ${d.label} <em>(${d.value})</em>`
+    );
 });
 
 // Project list rendering
 const projectsContainer = document.querySelector('.projects');
-const projects = await fetchJSON('../lib/projects.json');
-renderProjects(projects, projectsContainer, 'h2');
+const projects = await fetchJSON('../lib/projects.json').catch(() => null);
+renderProjects(projects ?? [], projectsContainer, 'h2');
 
-// Update title if needed
+// Optional title update
 const titleEl = document.querySelector('.projects-title');
 if (titleEl && Array.isArray(projects)) {
   titleEl.textContent = `Projects (${projects.length})`;

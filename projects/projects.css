@@ -128,6 +128,7 @@ h1 {
   font-size: 400%;
   margin: 0.25em 0 0.5em;
 }
+
 /* Step 2.3: put pie + legend side by side */
 .pie-and-legend {
   display: flex;
