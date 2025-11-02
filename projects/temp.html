@@ -1,0 +1,35 @@
+# Temporary file to hold correct HTML structure
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Projects</title>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="../style.css" />
+    <link rel="stylesheet" href="./projects.css" />
+
+    <!-- Scripts -->
+    <script type="module" src="../global.js"></script>
+</head>
+<body>
+    <h1 class="projects-title">Projects</h1>
+
+    <!-- Pie chart and legend container -->
+    <div class="pie-container">
+        <svg id="projects-pie-plot" viewBox="-50 -50 100 100">
+            <!-- D3 will handle the pie chart -->
+        </svg>
+        <ul class="legend">
+            <!-- D3 will populate the legend -->
+        </ul>
+    </div>
+
+    <!-- Projects list -->
+    <div class="projects"></div>
+
+    <!-- page-specific logic -->
+    <script type="module" src="./projects.js"></script>
+</body>
+</html>
