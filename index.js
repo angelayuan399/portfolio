@@ -7,8 +7,6 @@ const latestProjects = Array.isArray(projects) ? projects.slice(0, 3) : [];
 const projectsContainer = document.querySelector('.projects');
 renderProjects(latestProjects, projectsContainer, 'h2');
 
-/* ---- Step 3/4/5 (GitHub stats) ---- */
-// Replace with YOUR username (e.g., 'angelayuan399')
 const githubData = await fetchGitHubData('angelayuan399');
 
 // Step 4 — select container
