@@ -142,11 +142,26 @@ label.color-scheme select {
   border-radius: 0.35rem;
 }
 
+/* Summary stats block */
 .stats {
   display: grid;
-  grid-template-columns: max-content 1fr;
-  gap: .25rem .75rem;
-  margin: 1rem 0 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0.5rem 1.5rem;
+  padding: 1rem 0;
+  margin: 1rem 0;
 }
-.stats dt { font-weight: 600; }
-.stats dd { margin: 0; }
+
+.stats dt {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: #6c7280;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+}
+
+.stats dd {
+  font-size: 1.75rem;
+  margin: 0 0 1rem 0;
+  font-weight: 500;
+}
+
