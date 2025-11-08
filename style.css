@@ -166,6 +166,7 @@ label.color-scheme select {
 .stats dt { font: 600 12px/1.2 system-ui; letter-spacing:.06em; color:#6b7280; text-transform:uppercase; margin:0 0 6px; }
 .stats dd { margin:0; font-size: clamp(18px, 2.2vw, 34px); }
 
+
 /* === OUTER WRAPPER FOR THE WHOLE SUMMARY SECTION === */
 #stats-wrapper {
   border: 1px solid #d1d5db; /* light gray */

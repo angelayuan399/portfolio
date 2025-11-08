@@ -163,8 +163,3 @@ function renderScatterPlot(data, commits) {
     .text(d => `${d.author}\n${d.datetime.toLocaleString()}\n${d.totalLines} lines`);
 }
 
-// ---- call everything (keep your existing calls) ----
-const data = await loadData();
-const commits = processCommits(data);
-renderCommitInfo(data, commits);
-renderScatterPlot(data, commits);
