@@ -84,18 +84,7 @@ function renderCommitInfo(data, commits) {
   addStat(dl, 'Peak time of day', peak);
 }
 
-(async () => {
-  try {
-    const data = await loadData();
-    const commits = processCommits(data);
-    renderCommitInfo(data, commits);
 
-    // you can call renderScatterPlot(data, commits) later in Step 2
-    // renderScatterPlot(data, commits);
-  } catch (err) {
-    console.error('Meta page init failed:', err);
-  }
-})();
 
 // --- Scatterplot ------------------------------------------------------------
 function renderScatterPlot(data, commits) {
