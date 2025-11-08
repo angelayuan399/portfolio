@@ -271,10 +271,11 @@ dl.info[hidden]:not(:hover,:focus-within) {
 
 /* gridlines a bit subtle */
 .gridlines line {
-  stroke: #6c6464;
-  stroke-width: 1.5;
-  opacity: 1.0;
+  stroke: hsl(210, 10%, 70%);
+  stroke-width: 2;
+  opacity: 1 !important;
 }
+
 
 /* dot hover growth from center */
 circle {
