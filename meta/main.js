@@ -54,43 +54,34 @@ function processCommits(data) {
 }
 
 // 2) Render a small definition list of summary stats
+function addStat(dl, label, valueHTML) {
+  const container = dl.append('div').attr('class', 'stat-item');
+  container.append('dt').html(label);
+  container.append('dd').html(valueHTML);
+}
+
 function renderCommitInfo(data, commits) {
   const dl = d3.select('#stats')
     .append('dl')
     .attr('class', 'stats');
 
-  // TOTAL LOC
-  dl.append('dt').text('Total LOC');
-  dl.append('dd').text(data.length);
+  addStat(dl, 'Total LOC', data.length);
+  addStat(dl, 'Total commits', commits.length);
 
-  // TOTAL COMMITS
-  dl.append('dt').text('Total commits');
-  dl.append('dd').text(commits.length);
-
-  // FILE COUNT
   const fileCount = d3.group(data, d => d.file).size;
-  dl.append('dt').text('Files');
-  dl.append('dd').text(fileCount);
+  addStat(dl, 'Files', fileCount);
 
-  // LONGEST FILE
-  const fileLengths = d3.rollups(
-    data,
-    v => d3.max(v, d => d.line),
-    d => d.file
-  );
+  const fileLengths = d3.rollups(data, v => d3.max(v, d => d.line), d => d.file);
   const longest = d3.greatest(fileLengths, d => d[1]);
-  dl.append('dt').text('Longest file');
-  dl.append('dd').html(`${longest[0]} <br>(${longest[1]} lines)`);
+  addStat(dl, 'Longest file', `${longest[0]}<br>(${longest[1]} lines)`);
 
-  // PEAK TIME OF DAY
   const workByPeriod = d3.rollups(
     data,
     v => v.length,
     d => new Date(d.datetime).toLocaleString('en', { dayPeriod: 'short' })
   );
   const peak = d3.greatest(workByPeriod, d => d[1])?.[0];
-  dl.append('dt').text('Peak time of day');
-  dl.append('dd').text(peak);
+  addStat(dl, 'Peak time of day', peak);
 }
 
 (async () => {

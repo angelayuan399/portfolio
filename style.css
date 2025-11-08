@@ -190,5 +190,65 @@ label.color-scheme select {
     font-size: clamp(1.3rem, 4vw, 2rem);
   }
 }
+/* === OUTER WRAPPER FOR THE WHOLE SUMMARY SECTION === */
+#stats-wrapper {
+  border: 1px solid #d1d5db; /* light gray */
+  border-radius: 12px;
+  padding: 2rem;
+  margin: 2.5rem 0;
+  background: rgba(255,255,255,0.6);
+}
+
+/* === STATS GRID === */
+#stats dl.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.8rem;
+  margin-top: 1rem;
+}
+
+/* === EACH STAT CARD === */
+#stats dl.stats > div.stat-item {
+  border: 1px solid #e5e7eb; /* subtle border */
+  border-radius: 10px;
+  padding: 1.25rem 1rem;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  gap: .35rem;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+}
+
+/* Labels (dt) */
+#stats dl.stats dt {
+  margin: 0;
+  font-weight: 600;
+  letter-spacing: .06em;
+  color: #6b7280;
+  text-transform: uppercase;
+  font-size: .8rem;
+}
+
+/* Values (dd) */
+#stats dl.stats dd {
+  margin: 0;
+  line-height: 1.2;
+  font-size: clamp(1.2rem, 2vw, 2.3rem);
+  font-weight: 500;
+  word-break: break-word;
+}
+
+/* Mobile adjustments */
+@media (max-width: 600px) {
+  #stats-wrapper {
+    padding: 1.5rem;
+  }
+  #stats dl.stats {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  }
+  #stats dl.stats dd {
+    font-size: clamp(1.3rem, 4vw, 2rem);
+  }
+}
 
 
