@@ -3,22 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Contact</title>
+  <title>Meta</title>
 
   <link rel="stylesheet" href="../style.css" />
-
-  <link rel="stylesheet" href="./contact.css" />
   <script type="module" src="../global.js"></script>
+  <!-- Load main.js ONCE -->
   <script type="module" src="./main.js"></script>
 </head>
+<body>
+  <h1>Meta</h1>
+  <p>This page includes stats about the codebase.</p>
 
-<h1>Meta</h1>
-<p>This page includes stats about the codebase.</p>
-<div id="stats"></div>
-<script type="module" src="./main.js"></script>
-<div id="stats-wrapper">
-  <div id="stats"></div>
-</div>
+  <div id="stats-wrapper">
+    <div id="stats"></div>
+  </div>
 
-<h2>Commits by time of day</h2>
-<div id="chart" class="chart"></div>
+  <h2>Commits by time of day</h2>
+  <div id="chart" class="chart"></div>
+</body>
+</html>
