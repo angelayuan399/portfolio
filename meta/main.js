@@ -91,6 +91,13 @@ function renderScatterPlot(_data, commits) {
     .domain([0, 24])
     .range([usable.bottom, usable.top]);
 
+  // Step 4.1: Calculate min/max lines and create radius scale
+  const [minLines, maxLines] = d3.extent(commits, d => d.totalLines);
+  const rScale = d3.scaleSqrt().domain([minLines, maxLines]).range([2, 30]);
+
+  // Step 4.3: Sort commits by totalLines descending
+  const sortedCommits = d3.sort(commits, d => -d.totalLines);
+
   svg.append('g')
     .attr('class', 'gridlines')
     .attr('transform', `translate(${usable.left},0)`)
@@ -110,33 +117,29 @@ function renderScatterPlot(_data, commits) {
     .attr('transform', `translate(${usable.left}, 0)`)
     .call(yAxis);
 
- const dots = svg.append('g').attr('class', 'dots');
+  const dots = svg.append('g').attr('class', 'dots');
 
-dots.selectAll('circle')
-  .data(commits)
-  .join('circle')
-  .attr('cx', d => xScale(d.datetime))
-  .attr('cy', d => yScale(d.hourFrac))
-  .attr('r', 3.5)
-  .attr('opacity', 0.85)
-  .attr('fill', d => d3.interpolateRgb('#2c6cf6', '#ff8a00')(d.hourFrac / 24))
-
-  // ✅ tooltip appears when you hover
-  .on('mouseenter', (event, d) => {
-    renderTooltipContent(d);
-    updateTooltipVisibility(true);
-    updateTooltipPosition(event);
-  })
-
-  // ✅ tooltip follows the mouse
-  .on('mousemove', (event) => {
-    updateTooltipPosition(event);
-  })
-
-  // ✅ tooltip hides when you leave
-  .on('mouseleave', () => {
-    updateTooltipVisibility(false);
-  });
+  dots.selectAll('circle')
+    .data(sortedCommits)
+    .join('circle')
+    .attr('cx', d => xScale(d.datetime))
+    .attr('cy', d => yScale(d.hourFrac))
+    .attr('r', d => rScale(d.totalLines))
+    .attr('fill', d => d3.interpolateRgb('#2c6cf6', '#ff8a00')(d.hourFrac / 24))
+    .style('fill-opacity', 0.7)
+    .on('mouseenter', (event, d) => {
+      d3.select(event.currentTarget).style('fill-opacity', 1);
+      renderTooltipContent(d);
+      updateTooltipVisibility(true);
+      updateTooltipPosition(event);
+    })
+    .on('mousemove', (event) => {
+      updateTooltipPosition(event);
+    })
+    .on('mouseleave', (event) => {
+      d3.select(event.currentTarget).style('fill-opacity', 0.7);
+      updateTooltipVisibility(false);
+    });
 }
 
 // ------- single entry point -------
