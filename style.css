@@ -301,6 +301,11 @@ circle:hover {
   animation: marching-ants 2s linear infinite;
 }
 
+.brush .overlay {
+  cursor: crosshair;
+  fill: transparent;
+}
+
 circle.selected {
   fill: #ff6b6b;
 }

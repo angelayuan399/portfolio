@@ -65,6 +65,10 @@ function renderCommitInfo(data, commits) {
 }
 
 // ------- scatterplot -------
+function createBrushSelector(svg, brushed) {
+  svg.call(d3.brush().on('start brush end', brushed));
+}
+
 function renderScatterPlot(_data, commits) {
   const container = d3.select('#chart');
   container.selectAll('*').remove();
@@ -121,15 +125,7 @@ function renderScatterPlot(_data, commits) {
     .attr('transform', `translate(${usable.left}, 0)`)
     .call(yAxis);
 
-  // --- Brush setup ---
-  const brush = d3.brush()
-    .on('start brush end', brushed);
-
-  svg.call(brush);
-
-  // Raise dots and everything after overlay
-  svg.selectAll('.dots, .overlay ~ *').raise();
-
+  // --- Dots group ---
   const dots = svg.append('g').attr('class', 'dots');
 
   dots.selectAll('circle')
@@ -153,6 +149,12 @@ function renderScatterPlot(_data, commits) {
       d3.select(event.currentTarget).style('fill-opacity', 0.7);
       updateTooltipVisibility(false);
     });
+
+  // --- Brush setup ---
+  createBrushSelector(svg, brushed);
+
+  // Raise dots and axes above overlay
+  svg.selectAll('.dots, .overlay ~ *').raise();
 
   // --- Brushed event handler ---
   function brushed(event) {
