@@ -55,49 +55,40 @@ function processCommits(data) {
 
 // 2) Render a small definition list of summary stats
 function renderCommitInfo(data, commits) {
-  const statsContainer = d3
-    .select('#stats')
-    .append('div')
-    .attr('class', 'stats-grid');
+  const dl = d3.select('#stats')
+    .append('dl')
+    .attr('class', 'stats');
 
-  const filesCount = d3.group(data, d => d.file).size;
+  // TOTAL LOC
+  dl.append('dt').text('Total LOC');
+  dl.append('dd').text(data.length);
 
-  const maxDepth = d3.max(data, d => d.depth);
+  // TOTAL COMMITS
+  dl.append('dt').text('Total commits');
+  dl.append('dd').text(commits.length);
 
-  const longestLineLength = d3.max(data, d => d.length);
+  // FILE COUNT
+  const fileCount = d3.group(data, d => d.file).size;
+  dl.append('dt').text('Files');
+  dl.append('dd').text(fileCount);
 
-  // longest file
+  // LONGEST FILE
   const fileLengths = d3.rollups(
     data,
-    v => d3.max(v, r => r.line),
+    v => d3.max(v, d => d.line),
     d => d.file
   );
-  const longestFile = d3.greatest(fileLengths, d => d[1]);
-  const longestFileName = longestFile[0];
-  const longestFileLines = longestFile[1];
+  const longest = d3.greatest(fileLengths, d => d[1]);
+  dl.append('dt').text('Longest file');
+  dl.append('dd').html(`${longest[0]} <br>(${longest[1]} lines)`);
 
-  // peak time of day
+  // PEAK TIME OF DAY
   const workByPeriod = d3.rollups(
     data,
     v => v.length,
-    d => new Date(d.datetime)
-          .toLocaleString('en', { dayPeriod: 'short' })
+    d => new Date(d.datetime).toLocaleString('en', { dayPeriod: 'short' })
   );
-  const peakPeriod = d3.greatest(workByPeriod, d => d[1])[0];
-
-  const statsList = [
-    { label: 'TOTAL LOC', value: data.length },
-    { label: 'TOTAL COMMITS', value: commits.length },
-    { label: 'FILES', value: filesCount },
-    { label: 'LONGEST FILE', value: `${longestFileName} (${longestFileLines} lines)` },
-    { label: 'PEAK TIME OF DAY', value: `in the ${peakPeriod}` }
-  ];
-
-  statsList.forEach(stat => {
-    const item = statsContainer.append('div').attr('class', 'stat');
-
-    item.append('dt').text(stat.label);
-    item.append('dd').html(stat.value);
-  });
+  const peak = d3.greatest(workByPeriod, d => d[1])?.[0];
+  dl.append('dt').text('Peak time of day');
+  dl.append('dd').text(peak);
 }
-
