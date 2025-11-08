@@ -96,3 +96,86 @@ function renderCommitInfo(data, commits) {
     console.error('Meta page init failed:', err);
   }
 })();
+
+// --- Scatterplot ------------------------------------------------------------
+function renderScatterPlot(data, commits) {
+  // clear previous renders (safe for hot reloads)
+  const container = d3.select('#chart');
+  container.selectAll('*').remove();
+
+  // responsive SVG via viewBox; width/height just define the coordinate space
+  const width = 900;
+  const height = 420;
+  const margin = { top: 16, right: 24, bottom: 40, left: 48 };
+
+  const usable = {
+    left: margin.left,
+    right: width - margin.right,
+    top: margin.top,
+    bottom: height - margin.bottom,
+    width: width - margin.left - margin.right,
+    height: height - margin.top - margin.bottom,
+  };
+
+  const svg = container
+    .append('svg')
+    .attr('viewBox', `0 0 ${width} ${height}`)
+    .attr('preserveAspectRatio', 'xMidYMid meet')   // scales with the page
+    .style('overflow', 'visible');
+
+  // scales
+  const xScale = d3
+    .scaleTime()
+    .domain(d3.extent(commits, d => d.datetime))
+    .range([usable.left, usable.right])
+    .nice();
+
+  const yScale = d3
+    .scaleLinear()
+    .domain([0, 24])
+    .range([usable.bottom, usable.top]);
+
+  // gridlines (draw BEFORE axes so axes sit on top)
+  svg.append('g')
+    .attr('class', 'gridlines')
+    .attr('transform', `translate(${usable.left},0)`)
+    .call(d3.axisLeft(yScale).tickSize(-usable.width).tickFormat(''));
+
+  // axes
+  const xAxis = d3.axisBottom(xScale).ticks(width / 100);
+  const yAxis = d3
+    .axisLeft(yScale)
+    .ticks(12)
+    .tickFormat(d => String(d % 24).padStart(2, '0') + ':00');
+
+  svg.append('g')
+    .attr('class', 'x-axis')
+    .attr('transform', `translate(0, ${usable.bottom})`)
+    .call(xAxis);
+
+  svg.append('g')
+    .attr('class', 'y-axis')
+    .attr('transform', `translate(${usable.left}, 0)`)
+    .call(yAxis);
+
+  // dots
+  svg.append('g')
+    .attr('class', 'dots')
+    .selectAll('circle')
+    .data(commits)
+    .join('circle')
+    .attr('cx', d => xScale(d.datetime))
+    .attr('cy', d => yScale(d.hourFrac))
+    .attr('r', 3.5)
+    .attr('opacity', 0.8)
+    // simple night→day color scale (blue → orange)
+    .attr('fill', d => d3.interpolateRgb('#2c6cf6', '#ff8a00')(d.hourFrac / 24))
+    .append('title')
+    .text(d => `${d.author}\n${d.datetime.toLocaleString()}\n${d.totalLines} lines`);
+}
+
+// ---- call everything (keep your existing calls) ----
+const data = await loadData();
+const commits = processCommits(data);
+renderCommitInfo(data, commits);
+renderScatterPlot(data, commits);

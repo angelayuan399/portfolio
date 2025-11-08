@@ -251,4 +251,9 @@ label.color-scheme select {
   }
 }
 
-
+/* Scatterplot */
+#chart svg { width: 100%; max-width: 100%; display: block; }
+.x-axis text, .y-axis text { font-size: 12px; }
+.gridlines line { stroke: currentColor; stroke-opacity: 0.12; }
+.gridlines path { display: none; }
+.dots circle { vector-effect: non-scaling-stroke; }
