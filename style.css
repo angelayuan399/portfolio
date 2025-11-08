@@ -143,15 +143,14 @@ label.color-scheme select {
 }
 
 /* Summary stats block */
-.stats {
+.stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 0.5rem 1.5rem;
-  padding: 1rem 0;
-  margin: 1rem 0;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
 }
 
-.stats dt {
+.stat dt {
   font-size: 0.75rem;
   text-transform: uppercase;
   color: #6c7280;
@@ -159,9 +158,10 @@ label.color-scheme select {
   font-weight: 600;
 }
 
-.stats dd {
-  font-size: 1.75rem;
-  margin: 0 0 1rem 0;
+.stat dd {
+  font-size: 2rem;
+  margin: 0;
   font-weight: 500;
+  line-height: 1.3;
 }
 
