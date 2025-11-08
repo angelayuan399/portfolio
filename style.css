@@ -234,3 +234,54 @@ label.color-scheme select {
 .gridlines line { stroke: currentColor; stroke-opacity: 0.12; }
 .gridlines path { display: none; }
 .dots circle { vector-effect: non-scaling-stroke; }
+
+
+/* reuseable definition-list layout */
+dl.info {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: .25rem .75rem;
+  margin: 0;
+}
+dl.info > dt {
+  color: #6b7280; /* gray-ish label */
+  font-variant: all-small-caps;
+  letter-spacing: .04em;
+}
+dl.info > dd { margin: 0; }
+
+/* tooltip chrome */
+.tooltip {
+  position: fixed;
+  top: 1em; left: 1em;
+  max-width: min(360px, 90vw);
+  padding: .75rem .9rem;
+  background: rgba(255,255,255,.92);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(0,0,0,.08);
+  border-radius: .5rem;
+  box-shadow: 0 6px 22px rgba(0,0,0,.12);
+  transition: opacity .25s ease, visibility .25s ease;
+  z-index: 10;
+}
+dl.info[hidden]:not(:hover,:focus-within) {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* gridlines a bit subtle */
+.gridlines line {
+  stroke: #e5e7eb;
+  stroke-width: 1;
+}
+
+/* dot hover growth from center */
+circle {
+  transition: transform 200ms ease, opacity 200ms ease;
+  transform-origin: center;
+  transform-box: fill-box;
+}
+circle:hover {
+  transform: scale(1.5);
+  opacity: 1;
+}

@@ -110,18 +110,33 @@ function renderScatterPlot(_data, commits) {
     .attr('transform', `translate(${usable.left}, 0)`)
     .call(yAxis);
 
-  svg.append('g')
-    .attr('class', 'dots')
-    .selectAll('circle')
-    .data(commits)
-    .join('circle')
-    .attr('cx', d => xScale(d.datetime))
-    .attr('cy', d => yScale(d.hourFrac))
-    .attr('r', 3.5)
-    .attr('opacity', 0.8)
-    .attr('fill', d => d3.interpolateRgb('#2c6cf6', '#ff8a00')(d.hourFrac / 24))
-    .append('title')
-    .text(d => `${d.author}\n${d.datetime.toLocaleString()}\n${d.totalLines} lines`);
+ const dots = svg.append('g').attr('class', 'dots');
+
+dots.selectAll('circle')
+  .data(commits)
+  .join('circle')
+  .attr('cx', d => xScale(d.datetime))
+  .attr('cy', d => yScale(d.hourFrac))
+  .attr('r', 3.5)
+  .attr('opacity', 0.85)
+  .attr('fill', d => d3.interpolateRgb('#2c6cf6', '#ff8a00')(d.hourFrac / 24))
+
+  // ✅ tooltip appears when you hover
+  .on('mouseenter', (event, d) => {
+    renderTooltipContent(d);
+    updateTooltipVisibility(true);
+    updateTooltipPosition(event);
+  })
+
+  // ✅ tooltip follows the mouse
+  .on('mousemove', (event) => {
+    updateTooltipPosition(event);
+  })
+
+  // ✅ tooltip hides when you leave
+  .on('mouseleave', () => {
+    updateTooltipVisibility(false);
+  });
 }
 
 // ------- single entry point -------
@@ -135,3 +150,44 @@ function renderScatterPlot(_data, commits) {
     console.error('Meta init failed:', e);
   }
 })();
+
+
+function renderTooltipContent(commit) {
+  if (!commit) return;
+
+  const link  = document.getElementById('commit-link');
+  const date  = document.getElementById('commit-date');
+  const time  = document.getElementById('commit-time');
+  const author= document.getElementById('commit-author');
+  const lines = document.getElementById('commit-lines');
+
+  link.href = commit.url;
+  link.textContent = commit.id;
+
+  date.textContent = commit.datetime?.toLocaleString('en', { dateStyle: 'full' }) ?? '';
+  time.textContent = commit.datetime?.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) ?? '';
+  author.textContent = commit.author ?? '';
+  lines.textContent = commit.totalLines ?? '';
+}
+
+function updateTooltipVisibility(isVisible) {
+  const tooltip = document.getElementById('commit-tooltip');
+  tooltip.hidden = !isVisible;
+}
+
+function updateTooltipPosition(event) {
+  const tooltip = document.getElementById('commit-tooltip');
+  const offset = 12;
+
+  // place near cursor, clamp inside viewport
+  let x = event.clientX + offset;
+  let y = event.clientY + offset;
+
+  const { innerWidth: ww, innerHeight: wh } = window;
+  const rect = tooltip.getBoundingClientRect();
+  if (x + rect.width + 8 > ww) x = ww - rect.width - 8;
+  if (y + rect.height + 8 > wh) y = wh - rect.height - 8;
+
+  tooltip.style.left = `${x}px`;
+  tooltip.style.top  = `${y}px`;
+}
