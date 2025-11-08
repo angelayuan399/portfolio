@@ -142,25 +142,53 @@ label.color-scheme select {
   border-radius: 0.35rem;
 }
 
-/* Summary stats block */
-.stats {
+/* === Meta Stats Grid === */
+#stats dl.stats {
   display: grid;
-  grid-template-columns: auto 1fr auto 1fr auto 1fr;
-  gap: 2rem 4rem;
-  margin-top: 3rem;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 2rem 2.5rem;
+  margin: 2rem 0 4rem;
+  width: 100%;
+  max-width: 1200px;
 }
 
-.stats dt {
-  font-size: 0.9rem;
+/* Labels (dt) */
+#stats dl.stats dt {
+  margin: 0;
   font-weight: 600;
-  color: #6b7280; /* gray-500 */
+  letter-spacing: .06em;
+  color: #6b7280; /* gray */
   text-transform: uppercase;
-  letter-spacing: .05em;
+  font-size: 0.85rem;
 }
 
-.stats dd {
-  font-size: 3rem;
-  margin: 0 0 2rem 0;
+/* Values (dd) */
+#stats dl.stats dd {
+  margin: .35rem 0 1rem;
+  line-height: 1.2;
+  font-size: clamp(1.4rem, 2.5vw, 2.8rem);
+  font-weight: 500;
+  word-break: break-word;
+}
+
+/* Make multi-line dd look nicer */
+#stats dl.stats dd br {
+  line-height: 0;
+}
+
+/* Improve spacing on small screens */
+@media (max-width: 600px) {
+  #stats dl.stats {
+    gap: 1.5rem 1rem;
+  }
+
+  #stats dl.stats dt {
+    font-size: 0.75rem;
+  }
+
+  #stats dl.stats dd {
+    font-size: clamp(1.3rem, 4vw, 2rem);
+  }
 }
 
 
