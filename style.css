@@ -141,3 +141,12 @@ label.color-scheme select {
   background: var(--color);
   border-radius: 0.35rem;
 }
+
+.stats {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: .25rem .75rem;
+  margin: 1rem 0 2rem;
+}
+.stats dt { font-weight: 600; }
+.stats dd { margin: 0; }
