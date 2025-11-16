@@ -170,17 +170,3 @@ function updateView() {
     });
   }
 })();
-
-// projects data module
-export const projects = [
-  {
-    id: 'bikewatching',
-    title: 'BikeWatching',
-    desc: 'Interactive site that visualizes bicycle counts and routes — built with D3 and map overlays. Live demo and dataset-driven visual exploration.',
-    url: 'https://angelayuan399.github.io/bikewatching/',
-    screenshot: 'https://angelayuan399.github.io/bikewatching/', // used as iframe src for preview
-    tags: ['D3', 'Interactive', 'Mapping']
-  },
-
-  // ...add other projects here, include a "url" key for those that have a live demo
-];
