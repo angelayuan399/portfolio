@@ -44,24 +44,33 @@ function addStat(dl, label, valueHTML) {
 }
 
 function renderCommitInfo(data, commits) {
-  const dl = d3.select('#stats').append('dl').attr('class', 'stats');
+  // clear existing stats to avoid duplicates on slider changes
+  const statsContainer = d3.select('#stats');
+  statsContainer.selectAll('*').remove();
 
-  addStat(dl, 'Total LOC', data.length);
+  const dl = statsContainer.append('dl').attr('class', 'stats');
+
+  // compute the set of lines that belong to the provided commits
+  const commitIds = new Set(commits.map(c => c.id));
+  const linesForCommits = data.filter(d => commitIds.has(d.commit));
+
+  // Total LOC is number of lines present in the filtered set
+  addStat(dl, 'Total LOC', linesForCommits.length);
   addStat(dl, 'Total commits', commits.length);
 
-  const fileCount = d3.group(data, d => d.file).size;
+  const fileCount = d3.group(linesForCommits, d => d.file).size;
   addStat(dl, 'Files', fileCount);
 
-  const fileLengths = d3.rollups(data, v => d3.max(v, d => d.line), d => d.file);
+  const fileLengths = d3.rollups(linesForCommits, v => d3.max(v, d => d.line), d => d.file);
   const longest = d3.greatest(fileLengths, d => d[1]);
-  addStat(dl, 'Longest file', `${longest[0]}<br>(${longest[1]} lines)`);
+  addStat(dl, 'Longest file', longest ? `${longest[0]}<br>(${longest[1]} lines)` : '—');
 
   const workByPeriod = d3.rollups(
-    data, v => v.length,
+    commits, v => v.length,
     d => new Date(d.datetime).toLocaleString('en', { dayPeriod: 'short' })
   );
   const peak = d3.greatest(workByPeriod, d => d[1])?.[0];
-  addStat(dl, 'Peak time of day', peak);
+  addStat(dl, 'Peak time of day', peak ?? '—');
 }
 
 // ------- scatterplot -------
@@ -343,7 +352,7 @@ function renderTooltipContent(commit) {
 
   const link  = document.getElementById('commit-link');
   const date  = document.getElementById('commit-date');
-  const time  = document.getElementById('commit-time');
+  const time  = document.getElementById('commit-tooltip-time');
   const author= document.getElementById('commit-author');
   const lines = document.getElementById('commit-lines');
 
