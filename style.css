@@ -278,9 +278,14 @@ dl.info[hidden]:not(:hover,:focus-within) {
 
 /* dot hover growth from center */
 circle {
-  transition: transform 200ms ease, opacity 200ms ease;
+  transition: transform 200ms ease, opacity 200ms ease, r 400ms cubic-bezier(.5,1,.5,1);
   transform-origin: center;
   transform-box: fill-box;
+}
+@starting-style {
+  circle {
+    r: 0;
+  }
 }
 circle:hover {
   transform: scale(1.5);

@@ -69,7 +69,31 @@ function createBrushSelector(svg, brushed) {
   svg.call(d3.brush().on('start brush end', brushed));
 }
 
-function renderScatterPlot(_data, commits) {
+let commitProgress = 100;
+let commitMaxTime;
+let timeScale;
+let filteredCommits = [];
+let allCommits = [];
+let allData = [];
+
+function onTimeSliderChange() {
+  const slider = document.getElementById('commit-progress');
+  commitProgress = +slider.value;
+  commitMaxTime = timeScale.invert(commitProgress);
+
+  // Update <time> element
+  document.getElementById('commit-time').textContent =
+    commitMaxTime.toLocaleString('en', { dateStyle: 'long', timeStyle: 'short' });
+
+  // Filter commits
+  filteredCommits = allCommits.filter(d => d.datetime <= commitMaxTime);
+
+  // Update stats and chart
+  renderCommitInfo(allData, filteredCommits);
+  updateScatterPlot(allData, filteredCommits);
+}
+
+function renderScatterPlot(data, commits) {
   const container = d3.select('#chart');
   container.selectAll('*').remove();
 
@@ -129,7 +153,7 @@ function renderScatterPlot(_data, commits) {
   const dots = svg.append('g').attr('class', 'dots');
 
   dots.selectAll('circle')
-    .data(sortedCommits)
+    .data(sortedCommits, d => d.id)
     .join('circle')
     .attr('cx', d => xScale(d.datetime))
     .attr('cy', d => yScale(d.hourFrac))
@@ -165,6 +189,60 @@ function renderScatterPlot(_data, commits) {
     renderSelectionCount(selection, commits);
     renderLanguageBreakdown(selection, commits);
   }
+}
+
+function updateScatterPlot(data, commits) {
+  const width = 900, height = 420;
+  const margin = { top: 16, right: 24, bottom: 40, left: 48 };
+  const usable = {
+    left: margin.left,
+    right: width - margin.right,
+    top: margin.top,
+    bottom: height - margin.bottom,
+    width: width - margin.left - margin.right,
+    height: height - margin.top - margin.bottom,
+  };
+
+  const svg = d3.select('#chart').select('svg');
+  if (!svg.node()) return;
+
+  xScale.domain(d3.extent(commits, d => d.datetime));
+
+  const [minLines, maxLines] = d3.extent(commits, d => d.totalLines);
+  const rScale = d3.scaleSqrt().domain([minLines, maxLines]).range([2, 30]);
+
+  const xAxis = d3.axisBottom(xScale).ticks(width / 100);
+
+  // Update x-axis
+  const xAxisGroup = svg.select('g.x-axis');
+  xAxisGroup.selectAll('*').remove();
+  xAxisGroup.call(xAxis);
+
+  // Update dots
+  const dots = svg.select('g.dots');
+  const sortedCommits = d3.sort(commits, d => -d.totalLines);
+
+  dots.selectAll('circle')
+    .data(sortedCommits, d => d.id)
+    .join('circle')
+    .attr('cx', d => xScale(d.datetime))
+    .attr('cy', d => yScale(d.hourFrac))
+    .attr('r', d => rScale(d.totalLines))
+    .attr('fill', d => d3.interpolateRgb('#2c6cf6', '#ff8a00')(d.hourFrac / 24))
+    .style('fill-opacity', 0.7)
+    .on('mouseenter', (event, d) => {
+      d3.select(event.currentTarget).style('fill-opacity', 1);
+      renderTooltipContent(d);
+      updateTooltipVisibility(true);
+      updateTooltipPosition(event);
+    })
+    .on('mousemove', (event) => {
+      updateTooltipPosition(event);
+    })
+    .on('mouseleave', (event) => {
+      d3.select(event.currentTarget).style('fill-opacity', 0.7);
+      updateTooltipVisibility(false);
+    });
 }
 
 // --- Selection logic ---
@@ -228,8 +306,32 @@ function renderLanguageBreakdown(selection, commits) {
   try {
     const data = await loadData();
     const commits = processCommits(data);
-    renderCommitInfo(data, commits);
-    renderScatterPlot(data, commits);
+
+    allData = data;
+    allCommits = commits;
+
+    // Setup time scale for slider
+    timeScale = d3.scaleTime()
+      .domain([
+        d3.min(commits, d => d.datetime),
+        d3.max(commits, d => d.datetime)
+      ])
+      .range([0, 100]);
+    commitMaxTime = timeScale.invert(commitProgress);
+
+    filteredCommits = commits.filter(d => d.datetime <= commitMaxTime);
+
+    // Initial UI
+    renderCommitInfo(data, filteredCommits);
+    renderScatterPlot(data, filteredCommits);
+
+    // Setup slider event
+    const slider = document.getElementById('commit-progress');
+    slider.addEventListener('input', onTimeSliderChange);
+
+    // Initialize time display
+    document.getElementById('commit-time').textContent =
+      commitMaxTime.toLocaleString('en', { dateStyle: 'long', timeStyle: 'short' });
   } catch (e) {
     console.error('Meta init failed:', e);
   }
