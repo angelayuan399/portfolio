@@ -11,32 +11,135 @@
 
     <!-- nav + helpers -->
     <script type="module" src="../global.js"></script>
+    <style>
+      /* small page-level tweaks for the projects listing */
+      main {
+        padding: 2rem;
+        max-width: 100ch;
+        margin: 0 auto;
+      }
+      .projects-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+        gap: 1rem;
+      }
+      .project-card {
+        border: 1px solid var(--line, #e5e7eb);
+        border-radius: 10px;
+        padding: 1rem;
+        background: white;
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
+      }
+      .project-meta {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+      }
+      .project-title {
+        font-weight: 600;
+        margin: 0;
+        font-size: 1.05rem;
+      }
+      .project-desc {
+        margin: 0;
+        color: #374151;
+        font-size: 0.95rem;
+        line-height: 1.4;
+      }
+      .project-tags {
+        display: flex;
+        gap: 0.4rem;
+        flex-wrap: wrap;
+        margin-top: 0.5rem;
+      }
+      .tag {
+        background: #f3f4f6;
+        padding: 0.15rem 0.4rem;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        color: #374151;
+      }
+      .project-preview {
+        width: 100%;
+        height: 12rem;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid #e6e9ef;
+        background: #fff;
+        display: block;
+      }
+      .project-preview iframe {
+        width: 100%;
+        height: 100%;
+        border: 0;
+        display: block;
+      }
+      .project-actions {
+        margin-top: auto;
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+      }
+      .btn {
+        padding: 0.4rem 0.6rem;
+        border-radius: 8px;
+        background: #2c6cf6;
+        color: white;
+        text-decoration: none;
+        font-size: 0.9rem;
+      }
+      .btn.secondary {
+        background: #efefef;
+        color: #111;
+        border: 1px solid #ddd;
+      }
+      @media (max-width: 600px) {
+        .project-preview {
+          height: 10rem;
+        }
+      }
+    </style>
   </head>
   <body>
-    <h1 class="projects-title">Projects</h1>
+    <main>
+      <h1>Projects</h1>
+      <p>Selected projects and demos. Click a card to visit the live demo.</p>
 
-    <!-- wrap svg + legend -->
-    <div class="pie-and-legend">
-      <!-- Step 1.1: SVG is in the HTML -->
-      <svg id="projects-pie-plot" viewBox="-50 -50 100 100">
-        <!-- lab shows this red circle first; JS will delete it -->
-        <circle cx="0" cy="0" r="50" fill="red" />
-      </svg>
+      <div id="projects" class="projects-grid" aria-live="polite"></div>
+    </main>
 
-      <!-- Step 2.2: empty legend for D3 to fill -->
-      <ul class="legend"></ul>
-    </div>
-    
-    <input
-      class="searchBar"
-      type="search"
-      aria-label="Search projects"
-      placeholder="🔍 Search projects…"
-    />
-    <!-- Step 0.1 project list -->
-    <div class="projects"></div>
+    <script type="module">
+      import { projects } from './projects.js';
 
-    <!-- page-specific logic -->
-    <script type="module" src="./projects.js"></script>
+      const container = document.getElementById('projects');
+
+      function makeCard(p) {
+        const el = document.createElement('article');
+        el.className = 'project-card';
+        el.innerHTML = `
+          <div class="project-meta">
+            <h3 class="project-title">${p.title}</h3>
+          </div>
+          <div class="project-preview" aria-hidden="${!p.screenshot}">
+            ${p.screenshot ? `<iframe loading="lazy" src="${p.screenshot}" title="${p.title} preview" sandbox="allow-same-origin allow-scripts allow-forms allow-popups"></iframe>` : ''}
+          </div>
+          <p class="project-desc">${p.desc}</p>
+          <div class="project-tags">${(p.tags||[]).map(t => `<span class="tag">${t}</span>`).join('')}</div>
+          <div class="project-actions">
+            ${p.url ? `<a class="btn" href="${p.url}" target="_blank" rel="noopener">Open demo</a>` : ''}
+            <a class="btn secondary" href="#${p.id}">Details</a>
+          </div>
+        `;
+        return el;
+      }
+
+      // render
+      for (const p of projects) {
+        container.appendChild(makeCard(p));
+      }
+    </script>
   </body>
 </html>
