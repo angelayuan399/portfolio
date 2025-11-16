@@ -85,9 +85,6 @@ let filteredCommits = [];
 let allCommits = [];
 let allData = [];
 
-// color scale for line types (technology)
-const colors = d3.scaleOrdinal(d3.schemeTableau10);
-
 function onTimeSliderChange() {
   const slider = document.getElementById('commit-progress');
   commitProgress = +slider.value;
@@ -100,11 +97,9 @@ function onTimeSliderChange() {
   // Filter commits
   filteredCommits = allCommits.filter(d => d.datetime <= commitMaxTime);
 
-  // Update stats and chart
+  // Update stats, chart and files list
   renderCommitInfo(allData, filteredCommits);
   updateScatterPlot(allData, filteredCommits);
-
-  // Update file unit visualization
   updateFileDisplay(filteredCommits);
 }
 
@@ -339,8 +334,7 @@ function renderLanguageBreakdown(selection, commits) {
     // Initial UI
     renderCommitInfo(data, filteredCommits);
     renderScatterPlot(data, filteredCommits);
-
-    // Populate file visualization
+    // initial files display
     updateFileDisplay(filteredCommits);
 
     // Setup slider event
@@ -396,40 +390,44 @@ function updateTooltipPosition(event) {
   tooltip.style.top  = `${y}px`;
 }
 
+// New: update the files unit-visualization
 function updateFileDisplay(commits) {
-  // ensure #files exists
-  const filesRoot = d3.select('#files');
-  filesRoot.selectAll('*').remove();
-
-  if (!commits || commits.length === 0) return;
-
-  // lines belonging to the filtered commits
-  const lines = commits.flatMap(d => d.lines);
-
-  // group by filename and sort by size desc
+  // commits: array of commit objects (each commit has .lines array)
+  const lines = commits.flatMap(d => d.lines || []);
   const files = d3.groups(lines, d => d.file)
     .map(([name, lines]) => ({ name, lines }))
     .sort((a, b) => b.lines.length - a.lines.length);
 
-  // bind files
-  const fileDivs = filesRoot.selectAll('div.file')
+  const colors = d3.scaleOrdinal(d3.schemeTableau10);
+
+  const container = d3.select('#files');
+  if (!container.node()) return;
+
+  const rows = container.selectAll('div.file-row')
     .data(files, d => d.name)
-    .join(enter => enter.append('div').attr('class', 'file').call(div => {
-      div.append('dt').append('code');
-      div.append('small');
-      div.append('dd');
-    }));
+    .join(
+      enter => enter.append('div').attr('class', 'file-row').call(div => {
+        div.append('dt').append('code');
+        div.append('small').attr('class', 'file-count');
+        div.append('dd');
+      }),
+      update => update,
+      exit => exit.remove()
+    );
 
-  // update labels
-  fileDivs.select('dt > code').text(d => d.name);
-  fileDivs.select('small').text(d => `${d.lines.length} lines`).style('opacity', 0.6).style('display','block');
+  rows.select('dt > code').text(d => d.name);
+  rows.select('.file-count').text(d => `${d.lines.length} lines`);
 
-  // for each file's dd, append one .loc div per line and color by type
-  fileDivs.select('dd')
-    .selectAll('div.loc')
-    .data(d => d.lines)
-    .join('div')
-    .attr('class', 'loc')
-    .style('background', l => colors(l.type))
-    .attr('title', l => `${l.type} — ${l.author}`);
+  // For each file row, bind lines and create .loc units
+  rows.select('dd').each(function(d) {
+    const dd = d3.select(this);
+    const locs = dd.selectAll('div.loc')
+      .data(d.lines, (l, i) => (l.commit ?? '') + '|' + (l.line ?? i));
+
+    locs.join(
+      enter => enter.append('div').attr('class', 'loc').style('background', l => colors(l.type)),
+      update => update.style('background', l => colors(l.type)),
+      exit => exit.remove()
+    );
+  });
 }
