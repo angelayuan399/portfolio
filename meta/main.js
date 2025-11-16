@@ -1,4 +1,5 @@
 import * as d3 from 'https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm';
+import scrollama from 'https://cdn.jsdelivr.net/npm/scrollama@3.2.0/+esm';
 
 const GITHUB_USER = 'angelayuan399';
 const REPO_NAME   = 'portfolio';
@@ -19,7 +20,7 @@ async function loadData() {
 }
 
 function processCommits(data) {
-  return d3.groups(data, d => d.commit).map(([commit, lines]) => {
+  const commits = d3.groups(data, d => d.commit).map(([commit, lines]) => {
     const first = lines[0];
     const { author, date, time, timezone, datetime } = first;
     const ret = {
@@ -34,6 +35,9 @@ function processCommits(data) {
     });
     return ret;
   });
+
+  // Ensure chronological order
+  return commits.sort((a, b) => a.datetime - b.datetime);
 }
 
 // ------- summary stats -------
@@ -336,6 +340,50 @@ function renderLanguageBreakdown(selection, commits) {
     renderScatterPlot(data, filteredCommits);
     // initial files display
     updateFileDisplay(filteredCommits);
+
+    // Generate narrative steps for scrollytelling
+    d3.select('#scatter-story')
+      .selectAll('.step')
+      .data(commits)
+      .join('div')
+      .attr('class', 'step')
+      .html((d, i) => `
+        <h3>${d.datetime.toLocaleString('en', { dateStyle: 'medium', timeStyle: 'short' })}</h3>
+        <p>I made <a href="${d.url}" target="_blank" rel="noopener">${i > 0 ? 'another glorious commit' : 'my first commit'}</a>, editing ${d.totalLines} lines across ${d3.rollups(d.lines, v => v.length, l => l.file).length} files.</p>
+      `);
+
+    // Setup Scrollama
+    const scroller = scrollama();
+    function onStepEnter(response) {
+      const stepData = response.element.__data__;
+      if (!stepData) return;
+
+      // filter commits up to the step's datetime and update views
+      const toTime = stepData.datetime;
+      const newFiltered = allCommits.filter(c => c.datetime <= toTime);
+
+      // Update UI like the slider would
+      renderCommitInfo(allData, newFiltered);
+      updateScatterPlot(allData, newFiltered);
+      updateFileDisplay(newFiltered);
+
+      // update slider position/time display to match
+      const pct = timeScale(toTime);
+      const slider = document.getElementById('commit-progress');
+      slider.value = Math.round(pct);
+      commitProgress = +slider.value;
+      commitMaxTime = toTime;
+      document.getElementById('commit-time').textContent =
+        commitMaxTime.toLocaleString('en', { dateStyle: 'long', timeStyle: 'short' });
+    }
+
+    scroller
+      .setup({
+        container: '#scrolly-1',
+        step: '#scrolly-1 .step',
+        offset: 0.5,
+      })
+      .onStepEnter(onStepEnter);
 
     // Setup slider event
     const slider = document.getElementById('commit-progress');

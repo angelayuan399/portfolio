@@ -374,3 +374,43 @@ circle.selected {
   font-size: 0.9rem;
   white-space: nowrap;
 }
+
+/* ...existing code... */
+
+#scrolly-1 {
+  position: relative;
+  display: flex;
+  gap: 1rem;
+  align-items: start;
+}
+
+/* make columns share available width */
+#scrolly-1 > * { flex: 1; }
+
+/* narrative column */
+#scatter-story {
+  position: relative;
+  padding: 1rem;
+  max-width: 60ch;
+}
+
+/* sticky scatter plot column */
+#scatter-plot {
+  position: sticky;
+  top: 1rem;
+  left: 0;
+  height: 60vh; /* important so sticky has an effect */
+  align-self: start;
+  padding: 0.5rem;
+}
+
+/* each narrative step */
+#scatter-story .step {
+  padding: 1.5rem 0;
+  border-bottom: 1px dashed rgba(0,0,0,0.04);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* make steps taller so scrolling triggers clearly */
+#scatter-story .step + .step { padding-top: 2rem; }
