@@ -314,3 +314,65 @@ circle:hover {
 circle.selected {
   fill: #ff6b6b;
 }
+
+/* Files unit visualization */
+#files {
+  display: grid;
+  grid-template-columns: 1fr 4fr;
+  gap: 0.6rem 1rem;
+  margin-top: 0.5rem;
+}
+
+/* each file wrapper uses the subgrid to align dt/dd pairs */
+#files > .file {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: subgrid;
+  align-items: start;
+}
+
+/* filename cell */
+#files dt {
+  grid-column: 1;
+  font-family: monospace;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+/* small count shown under filename */
+#files small {
+  grid-column: 1;
+  font-size: 0.8rem;
+  color: #374151;
+  margin-top: 0.2rem;
+}
+
+/* dd contains the unit visualization dots */
+#files dd {
+  grid-column: 2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: start;
+  align-content: start;
+  gap: 0.15em;
+  padding-top: 0.6em;
+  margin-left: 0;
+}
+
+/* one dot per line */
+.loc {
+  display: inline-block;
+  width: 0.55em;
+  aspect-ratio: 1 / 1;
+  background: steelblue;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.04) inset;
+}
+
+/* keep small spacing on narrow screens */
+@media (max-width: 600px) {
+  #files {
+    grid-template-columns: 1fr;
+  }
+  #files dd { grid-column: 1; }
+}

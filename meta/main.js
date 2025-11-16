@@ -85,6 +85,9 @@ let filteredCommits = [];
 let allCommits = [];
 let allData = [];
 
+// color scale for line types (technology)
+const colors = d3.scaleOrdinal(d3.schemeTableau10);
+
 function onTimeSliderChange() {
   const slider = document.getElementById('commit-progress');
   commitProgress = +slider.value;
@@ -100,6 +103,9 @@ function onTimeSliderChange() {
   // Update stats and chart
   renderCommitInfo(allData, filteredCommits);
   updateScatterPlot(allData, filteredCommits);
+
+  // Update file unit visualization
+  updateFileDisplay(filteredCommits);
 }
 
 function renderScatterPlot(data, commits) {
@@ -334,6 +340,9 @@ function renderLanguageBreakdown(selection, commits) {
     renderCommitInfo(data, filteredCommits);
     renderScatterPlot(data, filteredCommits);
 
+    // Populate file visualization
+    updateFileDisplay(filteredCommits);
+
     // Setup slider event
     const slider = document.getElementById('commit-progress');
     slider.addEventListener('input', onTimeSliderChange);
@@ -385,4 +394,42 @@ function updateTooltipPosition(event) {
 
   tooltip.style.left = `${x}px`;
   tooltip.style.top  = `${y}px`;
+}
+
+function updateFileDisplay(commits) {
+  // ensure #files exists
+  const filesRoot = d3.select('#files');
+  filesRoot.selectAll('*').remove();
+
+  if (!commits || commits.length === 0) return;
+
+  // lines belonging to the filtered commits
+  const lines = commits.flatMap(d => d.lines);
+
+  // group by filename and sort by size desc
+  const files = d3.groups(lines, d => d.file)
+    .map(([name, lines]) => ({ name, lines }))
+    .sort((a, b) => b.lines.length - a.lines.length);
+
+  // bind files
+  const fileDivs = filesRoot.selectAll('div.file')
+    .data(files, d => d.name)
+    .join(enter => enter.append('div').attr('class', 'file').call(div => {
+      div.append('dt').append('code');
+      div.append('small');
+      div.append('dd');
+    }));
+
+  // update labels
+  fileDivs.select('dt > code').text(d => d.name);
+  fileDivs.select('small').text(d => `${d.lines.length} lines`).style('opacity', 0.6).style('display','block');
+
+  // for each file's dd, append one .loc div per line and color by type
+  fileDivs.select('dd')
+    .selectAll('div.loc')
+    .data(d => d.lines)
+    .join('div')
+    .attr('class', 'loc')
+    .style('background', l => colors(l.type))
+    .attr('title', l => `${l.type} — ${l.author}`);
 }
