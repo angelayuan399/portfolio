@@ -1,6 +1,13 @@
 [
 
     {
+        "title": "Bikewatching",
+        "year": "2025",
+        "image": "../images/bikewatching-screenshot.png",
+        "url": "https://angelayuan399.github.io/bikewatching/",
+        "description": "Interactive bikewatching map showing departures/arrivals with time filtering and visual emphasis on departures vs arrivals. Click through to explore the live map and controls."
+    },
+    {
         "title": "San Diego Bus Network: Routing & Wait-Time Simulation",
         "year": "2025",
         "image": "https://vis-society.github.io/labs/2/images/empty.svg",
